@@ -41,6 +41,18 @@ Route::get('/recepcion', function () {
     return view('recepcion');
 })->name('recepcion');
 
+Route::get('/recepcion', function () {
+    return view('recepcion');
+})->name('recepcion');
+
+Route::get('/recepcion', [recepcionController::class, 'create'])->name('recepcion');
+Route::get('/recepcion/create', [RecepcionController::class, 'create'])->name('recepcion.create');
+Route::post('/recepcion/store', [RecepcionController::class, 'store'])->name('recepcion.store');
+Route::get('/recepcion/search', [RecepcionController::class, 'search'])->name('recepcion.search');
+
+Route::get('/api/orden-compra/{id}', [RecepcionController::class, 'getOrdenCompraDetails']);
+
+
 Route::get('/devolucion', function () {
     return view('devolucion');
 })->name('devolucion');

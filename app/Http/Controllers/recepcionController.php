@@ -2,122 +2,89 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Suministro;
-use App\Models\OrdenesCompra;
 use App\Models\RecepcionesMercancia;
+use App\Models\OrdenesCompra;
+use App\Models\Suministro;
+use App\Models\Empleado;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class recepcionController extends Controller
+class RecepcionController extends Controller
 {
     public function create()
-    {
-        $suministro = Suministro::all();
-        $recepcion = RecepcionesMercancia::with('suministro')->get();
-        return view('recepcion', compact('suministro', 'recepcion'));
-    }
+{
+    $recepcionesMercancia = RecepcionesMercancia::with(['ordenCompra', 'empleado', 'proveedor', 'suministro'])->get();
+    $empleados = Empleado::all();
+    // Filtrar las órdenes de compra con status 'recibida' (asumiendo que es 2)
+    $ordenesCompra = OrdenesCompra::where('status', 2)->get();
+    $suministros = Suministro::all();
+    return view('recepcion', compact('empleados', 'ordenesCompra', 'suministros', 'recepcionesMercancia'));
+}
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'numeroOrden' => 'required|numeric',
-            'numeroRecepcion' => 'required|numeric',
-            'fechaRecepcion' => 'required|date|date_equals:'.date('Y-m-d'),
-            'cantidadRecibida' => 'required|integer|min:0',
-            'proveedor' => 'required|string|max:255',
-            'suministro' => 'required|string|max:255',
-            'estado' => 'required|string|in:bueno,dañado,incompleto',
+            'fechaRecepcion' => 'required|date|after_or_equal:today',
+            'cantidadRecibida' => 'required|numeric|min:0',
+            'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
+            'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
+            'estado' => 'required|string',
         ], [
-            'numeroOrden.required' => 'El número de orden es obligatorio.',
-            'numeroOrden.numeric' => 'El número de orden debe ser numérico.',
-            'numeroRecepcion.required' => 'El número de recepción es obligatorio.',
-            'numeroRecepcion.numeric' => 'El número de recepción debe ser numérico.',
             'fechaRecepcion.required' => 'La fecha de recepción es obligatoria.',
             'fechaRecepcion.date' => 'La fecha de recepción debe ser una fecha válida.',
-            'fechaRecepcion.date_equals' => 'La fecha de recepción debe ser la fecha actual.',
+            'fechaRecepcion.after_or_equal' => 'La fecha de recepción no puede ser antes de la fecha actual.',
             'cantidadRecibida.required' => 'La cantidad recibida es obligatoria.',
-            'cantidadRecibida.integer' => 'La cantidad recibida debe ser un número entero.',
-            'cantidadRecibida.min' => 'La cantidad recibida no puede ser negativa.',
-            'proveedor.required' => 'El proveedor es obligatorio.',
-            'suministro.required' => 'El suministro es obligatorio.',
+            'cantidadRecibida.numeric' => 'La cantidad recibida debe ser un número.',
+            'cantidadRecibida.min' => 'La cantidad recibida debe ser un valor positivo.',
+            'Empleados_idEmpleados.required' => 'El empleado es obligatorio.',
+            'Empleados_idEmpleados.exists' => 'El empleado seleccionado no existe.',
+            'Ordenes_compras_idOrden_compra.required' => 'La orden de compra es obligatoria.',
+            'Ordenes_compras_idOrden_compra.exists' => 'La orden de compra seleccionada no existe.',
             'estado.required' => 'El estado es obligatorio.',
-            'estado.in' => 'El estado debe ser uno de los siguientes: bueno, dañado, incompleto.',
+            'estado.string' => 'El estado debe ser una cadena de texto válida.',
         ]);
 
-        $recepcion = new RecepcionesMercancia();
-  
-        $recepcion->fecha_recepcion = $request->input('fechaRecepcion');
-        $recepcion->cantidad_recibida = $request->input('cantidadRecibida');
-       
-        if ($recepcion->save()) {
-            
-            $suministro = new Suministro();
-            $suministro->nombre_suministro = $request->input('suministro');
-            $suministro->save();
+        $recepcion = new RecepcionesMercancia;
+        $recepcion->fecha_recepcion = Carbon::now();
+        $recepcion->cantidad_recibida = $validatedData['cantidadRecibida'];
+        $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
+        $recepcion->Ordenes_compras_idOrden_compra = $validatedData['Ordenes_compras_idOrden_compra'];
+        $recepcion->Suministros_idSuministros = $request->input('suministro');
+        $recepcion->status = $validatedData['estado'];
+        $recepcion->save();
 
-            $OrdenesCompra = new OrdenesCompra();
-            $OrdenesCompra->idOrden_compra = $request->input('Numero_de_orden');
-            $OrdenesCompra->save();
-
-            return redirect()->route('recepcion.create')->with('success', 'Recepción creada exitosamente.');
-        } else {
-            return redirect()->route('recepcion.create')->with('error', 'No se pudo crear la recepción.');
-        }
+        return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancia registrada exitosamente');
     }
 
-    public function edit($id)
-    {
-        $recepcion = RecepcionesMercancia::find($id);
-        if (!$recepcion) {
-            return redirect()->route('recepcion.create')->with('error', 'Recepción no encontrada.');
-        }
+    public function getOrdenCompraDetails($id)
+{
+    $ordenCompra = OrdenesCompra::with(['detalles_ordenes_compras.suministro', 'proveedore'])
+        ->findOrFail($id);
+    
+    Log::info('Orden de compra: ', ['orden' => $ordenCompra->toArray()]);
+    Log::info('Proveedor: ', ['proveedor' => $ordenCompra->proveedore ? $ordenCompra->proveedore->toArray() : 'null']);
 
-        $suministro = Suministro::all();
-        return view('recepcionedit', compact('recepcion', 'suministro'));
-    }
+    $detalles = $ordenCompra->detalles_ordenes_compras->map(function ($detalle) {
+        return [
+            'suministro_id' => $detalle->Suministro_idSuministro,
+            'nombre_suministro' => $detalle->suministro->nombre_suministro,
+            'cantidad_pedida' => $detalle->cantidad_pedida,
+            'precio_unitario' => $detalle->precio_unitario,
+            'subtotal' => $detalle->subtotal
+        ];
+    });
 
-    public function update(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'numeroOrden' => 'required|numeric',
-            'numeroRecepcion' => 'required|numeric',
-            'fechaRecepcion' => 'required|date|date_equals:'.date('Y-m-d'),
-            'cantidadRecibida' => 'required|integer|min:0',
-            'proveedor' => 'required|string|max:255',
-            'suministro' => 'required|string|max:255',
-            'estado' => 'required|string|in:bueno,dañado,incompleto',
-        ], [
-            'numeroOrden.required' => 'El número de orden es obligatorio.',
-            'numeroOrden.numeric' => 'El número de orden debe ser numérico.',
-            'numeroRecepcion.required' => 'El número de recepción es obligatorio.',
-            'numeroRecepcion.numeric' => 'El número de recepción debe ser numérico.',
-            'fechaRecepcion.required' => 'La fecha de recepción es obligatoria.',
-            'fechaRecepcion.date' => 'La fecha de recepción debe ser una fecha válida.',
-            'fechaRecepcion.date_equals' => 'La fecha de recepción debe ser la fecha actual.',
-            'cantidadRecibida.required' => 'La cantidad recibida es obligatoria.',
-            'cantidadRecibida.integer' => 'La cantidad recibida debe ser un número entero.',
-            'cantidadRecibida.min' => 'La cantidad recibida no puede ser negativa.',
-            'proveedor.required' => 'El proveedor es obligatorio.',
-            'suministro.required' => 'El suministro es obligatorio.',
-            'estado.required' => 'El estado es obligatorio.',
-            'estado.in' => 'El estado debe ser uno de los siguientes: bueno, dañado, incompleto.',
-        ]);
-
-        $recepcion = RecepcionesMercancia::findOrFail($id);
-
-        $recepcion->update([
-            'fecha_recepcion' => $request->input('fechaRecepcion'),
-            'cantidad_recibida' => $request->input('cantidadRecibida'),
-            'estado' => $request->input('estado'),
-        ]);
-
-        $suministro = Suministro::find($recepcion->suministro_id);
-        $suministro->nombre_suministro = $request->input('suministro');
-        $suministro->save();
-
-        $OrdenesCompra = OrdenesCompra::find($recepcion->orden_compra_id);
-        $OrdenesCompra->idOrden_compra = $request->input('numeroOrden');
-        $OrdenesCompra->save();
-
-        return redirect()->route('recepcion.create')->with('success', 'Recepción actualizada correctamente.');
-    }
+    return response()->json([
+        'orden_compra' => [
+            'id' => $ordenCompra->idOrden_compra,
+            'fecha_emision' => $ordenCompra->fecha_emision->format('Y-m-d'),
+            'fecha_entrega' => $ordenCompra->fecha_entraga->format('Y-m-d'),
+            'proveedor' => $ordenCompra->proveedore ? $ordenCompra->proveedore->nombre_empresa : 'No especificado',
+            'subtotal' => $ordenCompra->subtotal_pagar,
+            'total' => $ordenCompra->total_pagar,
+        ],
+        'detalles' => $detalles
+    ]);
+}
 }

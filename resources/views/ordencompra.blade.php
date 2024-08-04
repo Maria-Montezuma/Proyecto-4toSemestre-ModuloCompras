@@ -20,79 +20,89 @@
         </div>
         @endif
   
-        <h2 class="mb-4 text-center">Orden de Compra</h2> 
-        <form action="{{ route('ordencompra.store') }}" method="POST">
-            @csrf
-            <div class="row mb-2">
-                <div class="col-md-4 p-2">
-                    <label for="fecha_emision">Fecha de Emisión</label>
-                    <p class="form-control mt-2" id="fecha_emision" name="fecha_emision">{{ \Carbon\Carbon::now()->format('Y-m-d') }}</p>
-                </div>
-                <div class="col-md-4 p-2 ">
-                    <label for="fecha">Fecha de Entrega</label>
-                    <input type="date" class="form-control mt-2" id="fecha" name="fecha_entraga" value="{{ old('fecha_entrega') }}" required placeholder="Seleccionar">
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-md-4 p-2">
-                    <label for="Empleados_idEmpleados">Empleado</label>
-                    <select class="form-control mt-2" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
-                        <option value="">Seleccionar Empleado</option>
-                        @foreach($empleados as $empleado)
-                        <option value="{{ $empleado->idEmpleados }}" {{ old('Empleados_idEmpleados') == $empleado->idEmpleados ? 'selected' : '' }}>{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4 p-2">
-                    <label for="Proveedores_idProveedores">Proveedor</label>
-                    <select class="form-control mt-2" id="Proveedores_idProveedores" name="Proveedores_idProveedores" required>
-                        <option value="">Seleccionar Proveedor</option>
-                        @foreach($proveedores as $proveedor)
-                        <option value="{{ $proveedor->idProveedores }}" {{ old('Proveedores_idProveedores') == $proveedor->idProveedores ? 'selected' : '' }}>{{ $proveedor->nombre_empresa }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                </div>
-                <table id="productTable" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-box me-1"></i>Suministro</th>
-                            <th><i class="fas fa-sort-amount-up me-1"></i>Cantidad</th>
-                            <th><i class="fas fa-solid fa-dollar-sign me-1"></i>Precio Unitario</th>
-                            <th><i class="fa-solid fa-check me-1"></i>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-             <td>
-            <select class="form-control suministro-select" name="suministros[] value="{{ old('suministro') }} required>
-                <option >Seleccionar Suministro</option>
-            </select>
-        </td>
-        <td><input type="number" class="form-control cantidad" name="cantidades[]" required min="1"></td>
-                <td><input type="number" step="0.01" class="form-control precio" name="precios[]"  readonly></td>
-                <td><input type="number" step="0.01" class="form-control subtotal" name="subtotales[]"  readonly></td>
-    </tr>
-</tbody>
-<tfoot>
-    <tr>
-        <td colspan="3"></td> <td class="text-right">
-            <label for="total">Total:</label>
-            <input type="number" step="0.01" class="form-control" id="total" name="total" readonly>
-        </td>
-    </tr>
-</tfoot>
-        </table>
-        <div>
-        <button type="reset" class="btn btn-primary me-2" title="Limpiar"> Limpiar 
-        <i class="fa-solid fa-broom"></i></button>
-            <button type="button" id="addRow" class="btn btn-dark me-2">Agregar Fila</button>
-            <button type="submit" class="btn btn-success me-2" title="Enviar">Enviar 
-                <i class="fa-solid fa-location-arrow"></i>
-            </button>
+        <h2 class="mb-4 text-center">Orden de Compra</h2>
+<form action="{{ route('ordencompra.store') }}" method="POST">
+    @csrf
+    <div class="row mb-1">
+        <div class="col-12 col-md-6">
+            <label for="fecha_emision">Fecha de Emisión</label>
+            <p class="form-control mt-2" id="fecha_emision" name="fecha_emision">{{ \Carbon\Carbon::now()->format('Y-m-d') }}</p>
         </div>
-        
-            </form> 
+        <div class="col-12 col-md-6">
+            <label for="fecha">Fecha de Entrega</label>
+            <input type="date" class="form-control mt-2" id="fecha" name="fecha_entraga" value="{{ old('fecha_entraga') }}" required placeholder="Seleccionar">
+        </div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-12 col-md-6">
+            <label for="Empleados_idEmpleados">Empleado</label>
+            <select class="form-control mt-2" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
+                <option value="">Seleccionar Empleado</option>
+                @foreach($empleados as $empleado)
+                <option value="{{ $empleado->idEmpleados }}" {{ old('Empleados_idEmpleados') == $empleado->idEmpleados ? 'selected' : '' }}>{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-12 col-md-6">
+            <label for="Proveedores_idProveedores">Proveedor</label>
+            <select class="form-control mt-2" id="Proveedores_idProveedores" name="Proveedores_idProveedores" required>
+                <option value="">Seleccionar Proveedor</option>
+                @foreach($proveedores as $proveedor)
+                <option value="{{ $proveedor->idProveedores }}" {{ old('Proveedores_idProveedores') == $proveedor->idProveedores ? 'selected' : '' }}>{{ $proveedor->nombre_empresa }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="table-responsive mt-3"> <!-- Añadido mt-3 para margen superior -->
+        <table id="productTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-box me-1"></i>Suministro</th>
+                    <th><i class="fas fa-sort-amount-up me-1"></i>Cantidad</th>
+                    <th><i class="fas fa-solid fa-dollar-sign me-1"></i>Precio Unitario</th>
+                    <th><i class="fa-solid fa-check me-1"></i>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select class="form-control suministro-select" name="suministros[]" value="{{ old('suministro') }}" required>
+                            <option>Seleccionar Suministro</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="form-control cantidad" name="cantidades[]" required min="1"></td>
+                    <td><input type="number" step="0.01" class="form-control precio" name="precios[]" readonly></td>
+                    <td><input type="number" step="0.01" class="form-control subtotal" name="subtotales[]" readonly></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="text-right">
+                        <label for="total">Total:</label>
+                        <input type="number" step="0.01" class="form-control" id="total" name="total" readonly>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div>
+        <button type="reset" class="btn btn-primary me-2" title="Limpiar"> Limpiar 
+            <i class="fa-solid fa-broom"></i>
+        </button>
+        <button type="button" id="addRow" class="btn btn-dark me-2">Agregar Fila</button>
+        <button type="submit" class="btn btn-success me-2" title="Enviar">Enviar 
+            <i class="fa-solid fa-location-arrow"></i>
+        </button>
+    </div>
+</form>
+
+
+
+
+
+
+ 
         </div>
 
         <!-- lista -->

@@ -1,96 +1,187 @@
 @extends('layouts.layout')
 
 @section('content')
- <div class="container formulario-container mt-5">
-    <h2 class="mb-4 text-center">Recepción de Suministros</h2>
-    <form>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="nombre" class="form-label">Numero de orden</label>
-                <input type="text" class="form-control" id="nombreOrden" required>
-            </div>
-            <div class="col-md-4">
-                <label for="nombre" class="form-label">Numero de Recepcion</label>
-                <input type="text" class="form-control" id="nombreOrden" required>
-            </div>
-            <div class="col-md-4 ">
-                <label for="Fecha">Fecha de Recepcion</label>
-                <input type="date" class="form-control" id="fecha" required placeholder="Seleccionar">
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="proveedor" class="form-label">Proveedor</label>
-                <input type="text" class="form-control" id="proveedor" required placeholder="Seleccionar...">
-            </div>
-        </div>
-        
+<div class="container formulario-container mt-5">
+    <h2 class="mb-4 text-center">Recepción de Mercancía</h2>
+
+    <!-- Detalles de la Orden de Compra -->
+   <!-- Añade este div para la información de la orden de compra -->
+   <div id="infoOrdenCompra" class="mb-4"></div>
 
 
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form action="{{ route('recepcion.store') }}" method="POST">
+        @csrf
+        <div class="row mb-3">
+            <!-- Orden de compra -->
+            <div class="col-md-4">
+                <label for="ordenCompra" class="form-label">N° Orden de compra</label>
+                <select class="form-control" id="Ordenes_compras_idOrden_compra" name="Ordenes_compras_idOrden_compra" required>
+    <option value="">Seleccionar Orden de Compra</option>
+    @foreach($ordenesCompra as $ordenCompra)
+    <option value="{{ $ordenCompra->idOrden_compra }}">
+        {{ $ordenCompra->idOrden_compra }} - {{ $ordenCompra->proveedore->nombre_empresa }}
+    </option>
+    @endforeach
+</select>
+            </div>
+            <!-- Empleado -->
+            <div class="col-md-4">
+                <label for="empleado" class="form-label">Empleado</label>
+                <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
+                    <option value="">Seleccionar Empleado</option>
+                    @foreach($empleados as $empleado)
+                    <option value="{{ $empleado->idEmpleados }}" {{ old('Empleados_idEmpleados') == $empleado->idEmpleados ? 'selected' : '' }}>{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <!-- Fecha de Recepcion de Mercancia  -->
+            <div class="col-md-4">
+                <label for="fecha_recepcion" class="form-label">Fecha de Recepcion</label>
+                <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" required>
+            </div>
+        </div>
+   
         <table id="productTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th><i class="fas fa-box me-1"></i>Suministro</th>
-                        <th><i class="fas fa-sort-amount-up me-1"></i>Cantidad</th>
-                        <th><i class="fas fa-info-circle me-1"></i>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" class="form-control" required></td>
-                        <td><input type="number" class="form-control" required></td>
-                        <td>
-                            <select class="form-select" required>
-                                <option value="">Seleccionar...</option>
-                                <option value="bueno">Bueno</option>
-                                <option value="dañado">Dañado</option>
-                                <option value="incompleto">Incompleto</option>
-                            </select>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div>
-            <button type="submit" class="btn btn-primary me-2" title="Limpiar"> Limpiar 
-                <i class="fa-solid fa-broom"></i></button>
-            <button type="button" class="btn btn-secondary mt-2" id="addProduct"><i class="fas fa-plus me-1"></i> Agregar Suministro</button>
-
-            <button  class="btn btn-success me-2 mt-2" title="Borrar"> Guardar
-            <i class="fa-solid fa-box-archive"></i></button>
+            <thead>
+                <tr>
+                    <th>Suministro</th>
+                    <th>Cantidad</th>
+                    <th>Cantidad Recibida</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select class="form-control" id="suministro" name="suministro" required>
+                            <option value="">Seleccionar Suministro</option>
+                            @foreach($suministros as $suministro)
+                            <option value="{{ $suministro->id }}" {{ old('suministro') == $suministro->id ? 'selected' : '' }}>{{ $suministro->nombre_suministro }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="cantidad_pedida" name="cantidad_pedida" required>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="cantidad_recibida" min='1' name="cantidad_recibida" required>
+                    </td>
+                    <td>
+                        <select class="form-select" name="status" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="bueno" {{ old('estado') == 'bueno' ? 'selected' : '' }}>Buen Estado</option>
+                            <option value="dañado" {{ old('estado') == 'dañado' ? 'selected' : '' }}>Deteriorado</option>
+                            <option value="incompleto" {{ old('estado') == 'incompleto' ? 'selected' : '' }}>Incompleto</option>
+                        </select>
+                    </td>
+                </tr>   
+            </tbody>
+        </table>
+        <div>
+            <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
+            <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
         </div>
     </form>
-</div> 
+</div>
 
-<div class="container mt-5 ">
+<div class="container mt-5">
     <h3>Lista de Recepciones</h3>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID Orden de Compra</th>
-                <th>ID Suministro</th>
+                <th>Empleado</th>
+                <th>Fecha Recepcion</th>
                 <th>Suministro</th>
                 <th>Cantidad</th>
-                <th>Proveedor</th>
-                <th>Estatus</th>
-                <th>Fecha de Recepcion</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>0001</td>
-                <td>000123</td>
-                <td>Pepinillo</td>
-                <td>12</td>
-                <td>Dani</td>
-                <td>Bueno</td>
-                <td>05-05-2024</td>
+                <td>Fernanda</td>
+                <td>31-07-2024</td>
+                <td>Arroz</td>
+                <td>3</td>
+                <td>Buen Estado</td>
                 <td>
                     <button class="btn btn-sm btn-warning me-1"> Editar <i class="fas fa-edit"></i></button>
                 </td>
             </tr>
-           <!-- mas proveedores -->
         </tbody>
     </table>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ordenCompraSelect = document.getElementById('Ordenes_compras_idOrden_compra');
+    
+    ordenCompraSelect.addEventListener('change', function() {
+        const ordenCompraId = this.value;
+        if (ordenCompraId) {
+            fetch(`/api/orden-compra/${ordenCompraId}`)
+                .then(response => response.json())
+                .then(data => {
+                    actualizarInfoOrdenCompra(data.orden_compra);
+                    actualizarTablaProductos(data.detalles);
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            // Limpiar la información si no se selecciona ninguna orden
+            document.getElementById('infoOrdenCompra').innerHTML = '';
+            document.getElementById('productTable').getElementsByTagName('tbody')[0].innerHTML = '';
+        }
+    });
+});
+
+function actualizarInfoOrdenCompra(ordenCompra) {
+    const infoOrdenCompra = document.getElementById('infoOrdenCompra');
+    infoOrdenCompra.innerHTML = `
+        <h4>Detalles de la Orden de Compra</h4>
+        <p><strong>Número de Orden:</strong> ${ordenCompra.id}</p>
+        <p><strong>Fecha de Emisión:</strong> ${ordenCompra.fecha_emision}</p>
+        <p><strong>Fecha de Entrega:</strong> ${ordenCompra.fecha_entrega}</p>
+        <p><strong>Proveedor:</strong> ${ordenCompra.proveedor}</p>
+        <p><strong>Subtotal:</strong> ${ordenCompra.subtotal}</p>
+        <p><strong>Total:</strong> ${ordenCompra.total}</p>
+    `;
+}
+
+function actualizarTablaProductos(detalles) {
+    const tabla = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+    tabla.innerHTML = ''; // Limpiar tabla existente
+    
+    detalles.forEach(detalle => {
+        let row = tabla.insertRow();
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
+        
+        cell1.innerHTML = `<select class="form-control" name="suministro[]">
+                            <option value="${detalle.suministro_id}" selected>${detalle.nombre_suministro}</option>
+                           </select>`;
+        cell2.innerHTML = `<input type="number" class="form-control" name="cantidadPedida[]" value="${detalle.cantidad_pedida}" readonly>`;
+        cell3.innerHTML = `<input type="number" class="form-control" name="cantidadRecibida[]" value="${detalle.cantidad_pedida}" required>`;
+        cell4.innerHTML = `<select class="form-select" name="estado[]" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="bueno">Buen Estado</option>
+                            <option value="dañado">Deteriorado</option>
+                            <option value="incompleto">Incompleto</option>
+                           </select>`;
+    });
+}
+</script>
 @endsection
