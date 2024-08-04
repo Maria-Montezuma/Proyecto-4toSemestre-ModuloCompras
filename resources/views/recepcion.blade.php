@@ -4,6 +4,13 @@
 <div class="container formulario-container mt-5">
     <h2 class="mb-4 text-center">Recepción de Mercancía</h2>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Detalles de la Orden de Compra -->
    <!-- Añade este div para la información de la orden de compra -->
    <div id="infoOrdenCompra" class="mb-4"></div>
@@ -94,33 +101,35 @@
 </div>
 
 <div class="container mt-5">
-    <h3>Lista de Recepciones</h3>
+<h3>Lista de Recepciones</h3>
+<div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>ID Recepción</th>
                 <th>ID Orden de Compra</th>
                 <th>Empleado</th>
                 <th>Fecha Recepcion</th>
-                <th>Suministro</th>
-                <th>Cantidad</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
+            @foreach($recepcionesMercancia as $recepcion)
             <tr>
-                <td>0001</td>
-                <td>Fernanda</td>
-                <td>31-07-2024</td>
-                <td>Arroz</td>
-                <td>3</td>
-                <td>Buen Estado</td>
+                <td>{{ $recepcion->idRecepcion_mercancia }}</td>
+                <td>{{ $recepcion->ordenes_compra->idOrden_compra }}</td>
+                <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
+                <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
+                <td>{{ $recepcion->status == 1 ? 'Aceptado' : 'Rechazado' }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning me-1"> Editar <i class="fas fa-edit"></i></button>
                 </td>
             </tr>
+            @endforeach
         </tbody>
     </table>
+    </div>
 </div>
 
 <script>

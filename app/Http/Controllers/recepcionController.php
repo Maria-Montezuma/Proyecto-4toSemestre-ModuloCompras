@@ -14,9 +14,8 @@ class RecepcionController extends Controller
 {
     public function create()
 {
-    $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra', 'empleado'])->get();
+    $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'empleado'])->orderBy('fecha_recepcion', 'desc')->get();
     $empleados = Empleado::all();
-    // Filtrar las órdenes de compra con status 'recibida' (asumiendo que es 2)
     $ordenesCompra = OrdenesCompra::where('status', 2)->get();
     $suministros = Suministro::all(['idSuministro', 'nombre_suministro']);
     
@@ -71,6 +70,7 @@ public function store(Request $request)
     $recepcion->save();
 
     return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía registrada exitosamente');
+
     }
 
     public function getOrdenCompraDetails($id)
