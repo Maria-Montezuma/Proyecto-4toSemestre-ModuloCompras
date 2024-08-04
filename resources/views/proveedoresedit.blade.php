@@ -59,6 +59,7 @@
         <div class="text-center mt-3">
             <button type="submit" class="btn btn-success" title="Actualizar">Actualizar
             <i class="fa-solid fa-box-archive"></i></button>
+            <a href="{{ route('proveedores.create') }}" class="btn btn-secondary" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
         </div>
     </form>
 </div>

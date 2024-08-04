@@ -27,77 +27,82 @@
     @endif
 
     <form action="{{ route('recepcion.store') }}" method="POST">
-        @csrf
-        <div class="row mb-3">
-            <!-- Orden de compra -->
-            <div class="col-md-4">
-                <label for="ordenCompra" class="form-label">N° Orden de compra</label>
-                <select class="form-control" id="Ordenes_compras_idOrden_compra" name="Ordenes_compras_idOrden_compra" required>
-    <option value="">Seleccionar Orden de Compra</option>
-    @foreach($ordenesCompra as $ordenCompra)
-    <option value="{{ $ordenCompra->idOrden_compra }}">
-        {{ $ordenCompra->idOrden_compra }} - {{ $ordenCompra->proveedore->nombre_empresa }}
-    </option>
-    @endforeach
-</select>
-            </div>
-            <!-- Empleado -->
-            <div class="col-md-4">
-                <label for="empleado" class="form-label">Empleado</label>
-                <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
-                    <option value="">Seleccionar Empleado</option>
-                    @foreach($empleados as $empleado)
-                    <option value="{{ $empleado->idEmpleados }}" {{ old('Empleados_idEmpleados') == $empleado->idEmpleados ? 'selected' : '' }}>{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <!-- Fecha de Recepcion de Mercancia  -->
-            <div class="col-md-4">
-                <label for="fecha_recepcion" class="form-label">Fecha de Recepcion</label>
-                <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" required>
-            </div>
+    @csrf
+    <div class="row mb-3">
+        <!-- Orden de compra -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="ordenCompra" class="form-label">N° Orden de compra</label>
+            <select class="form-control" id="Ordenes_compras_idOrden_compra" name="Ordenes_compras_idOrden_compra" required>
+                <option value="">Seleccionar Orden de Compra</option>
+                @foreach($ordenesCompra as $ordenCompra)
+                <option value="{{ $ordenCompra->idOrden_compra }}">
+                    {{ $ordenCompra->idOrden_compra }} - {{ $ordenCompra->proveedore->nombre_empresa }}
+                </option>
+                @endforeach
+            </select>
         </div>
-   
-        <table id="productTable" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Suministro</th>
-                    <th>Cantidad</th>
-                    <th>Cantidad Recibida</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <select class="form-control" id="suministro" name="suministro" required>
-                            <option value="">Seleccionar Suministro</option>
-                            @foreach($suministros as $suministro)
-                            <option value="{{ $suministro->id }}" {{ old('suministro') == $suministro->id ? 'selected' : '' }}>{{ $suministro->nombre_suministro }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control" id="cantidad_pedida" name="cantidad_pedida" required>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control" id="cantidad_recibida" name="cantidad_recibida" required>
-                    </td>
-                    <td>
-                <select class="form-select" name="status" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="aceptar" {{ old('estado') == 'aceptar' ? 'selected' : '' }}>Aceptar</option>
-                    <option value="rechazar" {{ old('estado') == 'rechazar' ? 'selected' : '' }}>Rechazar</option>
-                </select>
-            </td>
-                </tr>   
-            </tbody>
-        </table>
-        <div>
-            <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
-            <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
+        <!-- Empleado -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="empleado" class="form-label">Empleado</label>
+            <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
+                <option value="">Seleccionar Empleado</option>
+                @foreach($empleados as $empleado)
+                <option value="{{ $empleado->idEmpleados }}" {{ old('Empleados_idEmpleados') == $empleado->idEmpleados ? 'selected' : '' }}>
+                    {{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}
+                </option>
+                @endforeach
+            </select>
         </div>
-    </form>
+        <!-- Fecha de Recepcion de Mercancia  -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="fecha_recepcion" class="form-label">Fecha de Recepcion</label>
+            <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" required>
+        </div>
+    </div>
+
+    <table id="productTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Suministro</th>
+                <th>Cantidad</th>
+                <th>Cantidad Recibida</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select class="form-control" id="suministro" name="suministro" required>
+                        <option value="">Seleccionar Suministro</option>
+                        @foreach($suministros as $suministro)
+                        <option value="{{ $suministro->id }}" {{ old('suministro') == $suministro->id ? 'selected' : '' }}>
+                            {{ $suministro->nombre_suministro }}
+                        </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" id="cantidad_pedida" name="cantidad_pedida" required>
+                </td>
+                <td>
+                    <input type="number" class="form-control" id="cantidad_recibida" name="cantidad_recibida" required>
+                </td>
+                <td>
+                    <select class="form-select" name="status" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="aceptar" {{ old('estado') == 'aceptar' ? 'selected' : '' }}>Aceptar</option>
+                        <option value="rechazar" {{ old('estado') == 'rechazar' ? 'selected' : '' }}>Rechazar</option>
+                    </select>
+                </td>
+            </tr>   
+        </tbody>
+    </table>
+    <div>
+        <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
+        <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
+    </div>
+</form>
+
 </div>
 
 <div class="container mt-5">
@@ -123,7 +128,9 @@
                 <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                 <td>{{ $recepcion->status == 1 ? 'Aceptado' : 'Rechazado' }}</td>
                 <td>
-                    <button class="btn btn-sm btn-warning me-1"> Editar <i class="fas fa-edit"></i></button>
+                <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-warning me-1">
+        Editar <i class="fas fa-edit"></i>
+    </a>
                 </td>
             </tr>
             @endforeach

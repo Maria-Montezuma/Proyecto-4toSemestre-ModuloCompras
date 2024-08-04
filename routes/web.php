@@ -49,6 +49,8 @@ Route::get('/recepcion', [recepcionController::class, 'create'])->name('recepcio
 Route::get('/recepcion/create', [RecepcionController::class, 'create'])->name('recepcion.create');
 Route::post('/recepcion/store', [RecepcionController::class, 'store'])->name('recepcion.store');
 Route::get('/recepcion/search', [RecepcionController::class, 'search'])->name('recepcion.search');
+Route::get('/recepcion/{id}/edit', [RecepcionController::class, 'edit'])->name('recepcion.edit');
+Route::put('/recepcion/{id}', [RecepcionController::class, 'update'])->name('recepcion.update');
 
 Route::get('/api/orden-compra/{id}', [RecepcionController::class, 'getOrdenCompraDetails']);
 

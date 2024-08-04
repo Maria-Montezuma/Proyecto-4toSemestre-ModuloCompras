@@ -4,7 +4,7 @@
     <!-- error de validacion -->
     <div class="container formulario-container mt-5">
         @if ($errors->any())
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible fade show">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -15,7 +15,7 @@
 
         <!-- Mensaje de éxito -->
         @if (session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show">
             {{ session('success') }}
         </div>
         @endif

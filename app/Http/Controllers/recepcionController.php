@@ -103,4 +103,45 @@ public function store(Request $request)
         'detalles' => $detalles
     ]);
 }
+
+
+public function edit($id)
+{
+    $recepcion = RecepcionesMercancia::with(['ordenes_compra.detalles_ordenes_compras.suministro', 'empleado'])->findOrFail($id);
+    $empleados = Empleado::all();
+    
+    return view('recepcionedit', compact('recepcion', 'empleados'));
+}
+
+public function update(Request $request, $id)
+{
+    $recepcion = RecepcionesMercancia::findOrFail($id);
+
+    $validatedData = $request->validate([
+        'fecha_recepcion' => 'required|date',
+        'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
+        'cantidad_recibida' => 'required|array',
+        'cantidad_recibida.*' => 'required|integer|min:0',
+        'estado' => 'required|array',
+        'estado.*' => 'required|in:0,1',
+    ]);
+
+    $recepcion->fecha_recepcion = $validatedData['fecha_recepcion'];
+    $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
+    
+    // Calcular la cantidad total recibida
+    $cantidadTotalRecibida = array_sum($validatedData['cantidad_recibida']);
+    $recepcion->cantidad_recibida = $cantidadTotalRecibida;
+    
+    // Determinar el estado general de la recepción
+    $estadoGeneral = in_array(0, $validatedData['estado']) ? 0 : 1;
+    $recepcion->status = $estadoGeneral;
+    
+    $recepcion->save();
+
+    // Aquí podrías agregar lógica adicional para actualizar los detalles de la recepción si es necesario
+
+    return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía actualizada exitosamente');
+}
+
 }
