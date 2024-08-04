@@ -74,16 +74,15 @@
                         <input type="number" class="form-control" id="cantidad_pedida" name="cantidad_pedida" required>
                     </td>
                     <td>
-                        <input type="number" class="form-control" id="cantidad_recibida" min='1' name="cantidad_recibida" required>
+                        <input type="number" class="form-control" id="cantidad_recibida" name="cantidad_recibida" required>
                     </td>
                     <td>
-                        <select class="form-select" name="status" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="bueno" {{ old('estado') == 'bueno' ? 'selected' : '' }}>Buen Estado</option>
-                            <option value="dañado" {{ old('estado') == 'dañado' ? 'selected' : '' }}>Deteriorado</option>
-                            <option value="incompleto" {{ old('estado') == 'incompleto' ? 'selected' : '' }}>Incompleto</option>
-                        </select>
-                    </td>
+                <select class="form-select" name="status" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="aceptar" {{ old('estado') == 'aceptar' ? 'selected' : '' }}>Aceptar</option>
+                    <option value="rechazar" {{ old('estado') == 'rechazar' ? 'selected' : '' }}>Rechazar</option>
+                </select>
+            </td>
                 </tr>   
             </tbody>
         </table>
@@ -177,9 +176,8 @@ function actualizarTablaProductos(detalles) {
         cell3.innerHTML = `<input type="number" class="form-control" name="cantidadRecibida[]" value="${detalle.cantidad_pedida}" required>`;
         cell4.innerHTML = `<select class="form-select" name="estado[]" required>
                             <option value="">Seleccionar...</option>
-                            <option value="bueno">Buen Estado</option>
-                            <option value="dañado">Deteriorado</option>
-                            <option value="incompleto">Incompleto</option>
+                            <option value="aceptar">Aceptar</option>
+                            <option value="rechazar">Rechazar</option>
                            </select>`;
     });
 }

@@ -15,7 +15,8 @@ use Carbon\Carbon;
     {
         $proveedores = Proveedore::all();
         $empleados = Empleado::all();
-        return view('solicitud', compact('proveedores', 'empleados'));
+        $solicitudes = Solicitude::with(['empleado', 'proveedores'])->get();
+        return view('solicitud', compact('proveedores', 'empleados', 'solicitudes'));
     }
 
     public function create()
@@ -65,11 +66,12 @@ use Carbon\Carbon;
         ]);
 
         // Asocia el proveedor con la solicitud
-    $solicitud->proveedores()->attach($validatedData['idProveedores']);
+        $solicitud->proveedores()->attach($validatedData['idProveedores']);
 
         // Redirige con un mensaje de éxito
         return redirect()->route('solicitud.create')->with('success', 'Solicitud procesada con éxito.');
     }
+
 
     // prueba
     // Añade estos métodos si aún no los tienes
