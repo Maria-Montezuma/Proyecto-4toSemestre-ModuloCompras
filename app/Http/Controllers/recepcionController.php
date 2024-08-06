@@ -12,11 +12,19 @@ use Illuminate\Support\Facades\Log;
 
 class RecepcionController extends Controller
 {
-    public function create()
+   public function create()
 {
     $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'empleado'])->orderBy('fecha_recepcion', 'desc')->get();
     $empleados = Empleado::all();
-    $ordenesCompra = OrdenesCompra::where('status', 2)->get();
+    
+    // Obtener solo las órdenes de compra que no han sido recibidas
+    $ordenesCompra = OrdenesCompra::where('status', 2)
+        ->whereNotIn('idOrden_compra', function($query) {
+            $query->select('Ordenes_compras_idOrden_compra')
+                  ->from('recepciones_mercancias');
+        })
+        ->get();
+    
     $suministros = Suministro::all(['idSuministro', 'nombre_suministro']);
     
     return view('recepcion', compact('empleados', 'ordenesCompra', 'suministros', 'recepcionesMercancia'));
@@ -54,7 +62,16 @@ public function store(Request $request)
             'estado.*.in' => 'El estado debe ser "aceptar" o "rechazar".',
         ]);
 
-        $recepcion = new RecepcionesMercancia;
+        // Verificar si la orden de compra ya ha sido registrada
+    $ordenCompraId = $validatedData['Ordenes_compras_idOrden_compra'];
+    $recepcionExistente = RecepcionesMercancia::where('Ordenes_compras_idOrden_compra', $ordenCompraId)->first();
+
+    if ($recepcionExistente) {
+        return redirect()->route('recepcion.create')->with('error', 'Esta orden de compra ya ha sido registrada en una recepción.');
+    }
+
+    // Si no existe, proceder con el registro
+    $recepcion = new RecepcionesMercancia;
     $recepcion->fecha_recepcion = Carbon::now();
     $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
     $recepcion->Ordenes_compras_idOrden_compra = $validatedData['Ordenes_compras_idOrden_compra'];

@@ -12,7 +12,6 @@
     @endif
 
     <!-- Detalles de la Orden de Compra -->
-   <!-- Añade este div para la información de la orden de compra -->
    <div id="infoOrdenCompra" class="mb-4"></div>
 
 
@@ -106,36 +105,46 @@
 </div>
 
 <div class="container mt-5">
-<h3>Lista de Recepciones</h3>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID Recepción</th>
-                <th>ID Orden de Compra</th>
-                <th>Empleado</th>
-                <th>Fecha Recepcion</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($recepcionesMercancia as $recepcion)
-            <tr>
-                <td>{{ $recepcion->idRecepcion_mercancia }}</td>
-                <td>{{ $recepcion->ordenes_compra->idOrden_compra }}</td>
-                <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
-                <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
-                <td>{{ $recepcion->status == 1 ? 'Aceptado' : 'Rechazado' }}</td>
-                <td>
-                <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-warning me-1">
-        Editar <i class="fas fa-edit"></i>
-    </a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h3>Lista de Recepciones</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID Recepción</th>
+                    <th>ID Orden de Compra</th>
+                    <th>Empleado</th>
+                    <th>Fecha Recepción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($recepcionesMercancia as $recepcion)
+                <tr>
+                    <td>{{ $recepcion->idRecepcion_mercancia }}</td>
+                    <td>{{ $recepcion->ordenes_compra->idOrden_compra }}</td>
+                    <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
+                    <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
+                    <td>
+                        @if($recepcion->status == 1)
+                            <span class="badge bg-success">Aceptado</span>
+                        @elseif($recepcion->status == 0)
+                            <span class="badge bg-danger">Rechazado</span>
+                        @else
+                            <span class="badge bg-warning">Parcial</span>
+                        @endif
+                        <br>
+                        <small>Cantidad recibida: {{ $recepcion->cantidad_recibida }}</small>
+                    </td>
+                    <td>
+                        <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-warning me-1">
+                            Editar <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
