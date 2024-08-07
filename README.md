@@ -75,9 +75,7 @@ aqui van los insert
 
     INSERT INTO `categorias`( `nombre_categoria`) VALUES ('Utensilios'), ('Equipos'), ('Ingredientes y Alimentos'),('Bebidas'),('Otros'); 
 
-    INSERT INTO `cargos`( `nombre_cargo`) VALUES ('Administrador'),('Cajero'),('Recepcionista'), ('Gerente');
-
-    INSERT INTO `suministros`(`nombre_suministro`, `precio_unitario`, `categorias_idcategorias`) VALUES ('Tenedores',30.00,1),  ('Panes',60.00,3), ('Manteles',15.00,5), ('TLicores',80.00,4),  ('Neveras',120.00,2);
+    INSERT INTO `suministros`(`nombre_suministro`, `precio_unitario`, `categorias_idcategorias`) VALUES ('Tenedores',30.00,1),  ('Panes',60.00,3), ('Manteles',15.00,5), ('Licores',80.00,4),  ('Neveras',120.00,2);
 
     INSERT INTO `proveedores_has_suministro`( `Proveedores_idProveedores`, `Suministro_idSuministro`) VALUES (1,2);
  -->

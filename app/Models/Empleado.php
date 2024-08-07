@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $cedula
  * 
  * @property Collection|Devolucione[] $devoluciones
- * @property Collection|Cargo[] $cargos
  * @property Collection|OrdenesCompra[] $ordenes_compras
  * @property Collection|RecepcionesMercancia[] $recepciones_mercancias
  * @property Collection|Solicitude[] $solicitudes
@@ -39,13 +38,7 @@ class Empleado extends Model
 
 	public function devoluciones()
 	{
-		return $this->hasMany(Devolucione::class, 'Empleados_idEmpleados');
-	}
-
-	public function cargos()
-	{
-		return $this->belongsToMany(Cargo::class, 'empleados_has_cargos', 'Empleados_idEmpleados', 'Cargos_idCargos')
-					->withPivot('idEmpleados_has_Cargos');
+		return $this->hasMany(Devolucione::class, 'Emplados_idEmplados');
 	}
 
 	public function ordenes_compras()

@@ -19,13 +19,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $status
  * @property float $subtotal_pagar
  * @property float $total_pagar
+ * @property Carbon|null $enviado_at
  * @property int $Empleados_idEmpleados
  * @property int $Proveedores_idProveedores
  * 
  * @property Empleado $empleado
  * @property Proveedore $proveedore
  * @property Collection|DetallesOrdenesCompra[] $detalles_ordenes_compras
- * @property Collection|Pago[] $pagos
  * @property Collection|RecepcionesMercancia[] $recepciones_mercancias
  *
  * @package App\Models
@@ -42,6 +42,7 @@ class OrdenesCompra extends Model
 		'status' => 'int',
 		'subtotal_pagar' => 'float',
 		'total_pagar' => 'float',
+		'enviado_at' => 'datetime',
 		'Empleados_idEmpleados' => 'int',
 		'Proveedores_idProveedores' => 'int'
 	];
@@ -52,6 +53,7 @@ class OrdenesCompra extends Model
 		'status',
 		'subtotal_pagar',
 		'total_pagar',
+		'enviado_at',
 		'Empleados_idEmpleados',
 		'Proveedores_idProveedores'
 	];
@@ -71,16 +73,10 @@ class OrdenesCompra extends Model
 		return $this->hasMany(DetallesOrdenesCompra::class, 'Ordenes_compra_idOrden_compra');
 	}
 
-	public function pagos()
-	{
-		return $this->hasMany(Pago::class, 'Ordenes_compras_idOrden_compra');
-	}
-
 	public function recepciones_mercancias()
 	{
 		return $this->hasMany(RecepcionesMercancia::class, 'Ordenes_compras_idOrden_compra');
 	}
-
 
 	protected $dates = ['fecha_emision', 'fecha_entraga', 'enviado_at'];
 
@@ -99,11 +95,15 @@ class OrdenesCompra extends Model
 
 	public function actualizarEstadoSiNecesario()
     {
-        if ($this->status == 1 && $this->enviado_at && Carbon::parse($this->enviado_at)->addMinutes(15)->isPast()) {
+        if ($this->status == 1 && $this->enviado_at && Carbon::parse($this->enviado_at)->addMinutes(2)->isPast()) {
             $this->status = 2; // Asumiendo que 2 es el estado "recibido"
             $this->save();
         }
     }
 
 
+
 }
+
+
+

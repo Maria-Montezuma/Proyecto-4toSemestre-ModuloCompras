@@ -126,16 +126,16 @@
                     <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
                     <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                     <td>
-                        @if($recepcion->status == 1)
-                            <span class="badge bg-success">Aceptado</span>
-                        @elseif($recepcion->status == 0)
-                            <span class="badge bg-danger">Rechazado</span>
-                        @else
-                            <span class="badge bg-warning">Parcial</span>
-                        @endif
-                        <br>
-                        <small>Cantidad recibida: {{ $recepcion->cantidad_recibida }}</small>
-                    </td>
+    @if($recepcion->status == 1)
+        <span class="badge bg-success p-2">Aceptado</span>
+    @elseif($recepcion->status == 0)
+        <span class="badge bg-danger p-2">Rechazado</span>
+    @else
+        <span class="badge bg-secondary p-2">Parcial</span>
+    @endif
+    <br>
+    <small>{{ $recepcion->status_details }}</small>
+</td>
                     <td>
                         <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-warning me-1">
                             Editar <i class="fas fa-edit"></i>

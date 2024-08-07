@@ -137,11 +137,11 @@
                         <td>${{ number_format($orden->total_pagar, 2) }}</td>
                         <td>
                             @if($orden->status == 1)
-                                <span class="badge bg-success">enviado</span>
+                                <span class="badge bg-success p-2">enviado</span>
                             @elseif($orden->status == 0)
-                                <span class="badge bg-danger">Cancelada</span>
+                                <span class="badge bg-danger p-2">Cancelada</span>
                             @else
-                                <span class="badge bg-secondary">Recibida</span>
+                                <span class="badge bg-secondary p-2">Recibida</span>
                             @endif
                         </td>
                         <td>
