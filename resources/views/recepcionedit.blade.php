@@ -48,25 +48,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($recepcion->ordenes_compra->detalles_ordenes_compras as $detalle)
+            @foreach($detallesRecepcion as $detalle)
             <tr>
                 <td>
-                    <select class="form-control" name="suministro[]" readonly>
-                        <option value="{{ $detalle->Suministro_idSuministro }}" selected>
-                            {{ $detalle->suministro->nombre_suministro }}
-                        </option>
-                    </select>
+                    <input type="text" class="form-control" value="{{ $detalle['nombre_suministro'] }}" readonly>
+                    <input type="hidden" name="suministro[]" value="{{ $detalle['Suministro_idSuministro'] }}">
                 </td>
                 <td>
-                    <input type="number" class="form-control" name="cantidad_pedida[]" value="{{ $detalle->cantidad_pedida }}" readonly>
+                    <input type="number" class="form-control" name="cantidad_pedida[]" value="{{ $detalle['cantidad_pedida'] }}" readonly>
                 </td>
                 <td>
-                    <input type="number" class="form-control" name="cantidad_recibida[]" value="{{ $detalle->cantidad_pedida }}" required>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" value="{{ $detalle['cantidad_recibida'] }}" required>
                 </td>
                 <td>
                     <select class="form-select" name="estado[]" required>
-                        <option value="1" {{ $recepcion->status == 1 ? 'selected' : '' }}>Aceptado</option>
-                        <option value="0" {{ $recepcion->status == 0 ? 'selected' : '' }}>Rechazado</option>
+                        <option value="1" {{ $detalle['status'] == 1 ? 'selected' : '' }}>Aceptado</option>
+                        <option value="0" {{ $detalle['status'] == 0 ? 'selected' : '' }}>Rechazado</option>
                     </select>
                 </td>
             </tr>
@@ -79,7 +76,6 @@
         <a href="{{ route('recepcion.create') }}" class="btn btn-secondary mt-2" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
     </div>
 </form>
-
 
 </div>
 @endsection

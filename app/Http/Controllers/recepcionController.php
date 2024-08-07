@@ -159,7 +159,18 @@ public function edit($id)
     $recepcion = RecepcionesMercancia::with(['ordenes_compra.detalles_ordenes_compras.suministro', 'empleado'])->findOrFail($id);
     $empleados = Empleado::all();
     
-    return view('recepcionedit', compact('recepcion', 'empleados'));
+    // Obtener los detalles de la recepción
+    $detallesRecepcion = $recepcion->ordenes_compra->detalles_ordenes_compras->map(function ($detalle) use ($recepcion) {
+        return [
+            'Suministro_idSuministro' => $detalle->Suministro_idSuministro,
+            'nombre_suministro' => $detalle->suministro->nombre_suministro,
+            'cantidad_pedida' => $detalle->cantidad_pedida,
+            'cantidad_recibida' => $recepcion->cantidad_recibida, // Esto asume que la cantidad recibida es la misma para todos los suministros
+            'status' => $recepcion->status
+        ];
+    });
+    
+    return view('recepcionedit', compact('recepcion', 'empleados', 'detallesRecepcion'));
 }
 
 public function update(Request $request, $id)
@@ -183,12 +194,27 @@ public function update(Request $request, $id)
     $recepcion->cantidad_recibida = $cantidadTotalRecibida;
     
     // Determinar el estado general de la recepción
-    $estadoGeneral = in_array(0, $validatedData['estado']) ? 0 : 1;
-    $recepcion->status = $estadoGeneral;
+    $aceptados = 0;
+    $rechazados = 0;
+    $total_items = count($validatedData['estado']);
+
+    foreach ($validatedData['estado'] as $estado) {
+        if ($estado == 1) {
+            $aceptados++;
+        } elseif ($estado == 0) {
+            $rechazados++;
+        }
+    }
+
+    if ($aceptados === $total_items) {
+        $recepcion->status = 1; // Todos aceptados
+    } elseif ($rechazados === $total_items) {
+        $recepcion->status = 0; // Todos rechazados
+    } else {
+        $recepcion->status = 2; // Parcial
+    }
     
     $recepcion->save();
-
-    // Aquí podrías agregar lógica adicional para actualizar los detalles de la recepción si es necesario
 
     return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía actualizada exitosamente');
 }
