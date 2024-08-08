@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($detallesRecepcion as $detalle)
+            @foreach($detallesRecepcion as $key => $detalle)
             <tr>
                 <td>
                     <input type="text" class="form-control" value="{{ $detalle['nombre_suministro'] }}" readonly>

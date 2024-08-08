@@ -14,7 +14,7 @@ class OrdenCompraController extends Controller
 {
     public function create()
     {
-        $ordenesCompra = OrdenesCompra::with(['proveedore', 'empleado'])->get();
+        $ordenesCompra = OrdenesCompra::with(['proveedore', 'empleado'])->orderBy('idOrden_compra', 'desc')->get();
 
         // Actualizar el estado de las órdenes si es necesario
     foreach ($ordenesCompra as $orden) {

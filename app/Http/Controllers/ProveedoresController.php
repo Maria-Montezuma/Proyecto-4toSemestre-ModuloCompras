@@ -13,7 +13,7 @@ class ProveedoresController extends Controller
     public function create()
     {
         $categorias = Categoria::all();
-        $proveedores = Proveedore::with('categorias')->get();
+        $proveedores = Proveedore::with('categorias')->orderBy('idProveedores', 'desc')->get();;
         return view('proveedores', compact('categorias', 'proveedores'));
     } 
 

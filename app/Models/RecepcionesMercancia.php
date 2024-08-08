@@ -62,4 +62,18 @@ class RecepcionesMercancia extends Model
 	{
 		return $this->hasMany(Devolucione::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
+
+	public function getStatusDetailsAttribute()
+{
+    switch($this->status) {
+        case 0:
+            return 'Todos los suministros rechazados';
+        case 1:
+            return 'Todos los suministros aceptados';
+        case 2:
+            return 'Recepción parcial';
+        default:
+            return 'Estado desconocido';
+    }
+}
 }

@@ -12,23 +12,57 @@ use Illuminate\Support\Facades\Log;
 
 class RecepcionController extends Controller
 {
+
+/**
+ * Determina el estado general de la recepción de mercancía.
+ *
+ * @param array $estados Estado de cada suministro (0 = Rechazado, 1 = Aceptado)
+ * @param array $cantidades Cantidades recibidas de cada suministro
+ * @return int Estado general de la recepción (0 = Todos rechazados, 1 = Todos aceptados, 2 = Parcial)
+ */
+private function determinarEstadoGeneral($estados, $cantidades)
+{
+    $aceptados = 0;
+    $rechazados = 0;
+    $total_items = count($estados);
+
+    foreach ($estados as $key => $estado) {
+        if ($estado == 1) {
+            $aceptados++;
+            $cantidades[$key] = $cantidades[$key]; // Mantener la cantidad recibida
+        } elseif ($estado == 0) {
+            $rechazados++;
+            $cantidades[$key] = 0; // Establecer la cantidad recibida a 0 para los rechazados
+        }
+    }
+
+    if ($aceptados === $total_items) {
+        return 1; // Todos aceptados
+    } elseif ($rechazados === $total_items) {
+        return 0; // Todos rechazados
+    } else {
+        return 2; // Parcial
+    }
+}
+
+
    public function create()
 {
-    $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'empleado'])->orderBy('fecha_recepcion')->get();
-    $empleados = Empleado::all();
-    
-    // Obtener solo las órdenes de compra que no han sido recibidas
-    $ordenesCompra = OrdenesCompra::where('status', 2)
-        ->whereNotIn('idOrden_compra', function($query) {
-            $query->select('Ordenes_compras_idOrden_compra')
-                  ->from('recepciones_mercancias');
-        })
-        ->get();
-    
-    $suministros = Suministro::all(['idSuministro', 'nombre_suministro']);
-    
-    return view('recepcion', compact('empleados', 'ordenesCompra', 'suministros', 'recepcionesMercancia'));
-}
+    $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'empleado'])->orderBy('idRecepcion_mercancia', 'desc')->get();
+        $empleados = Empleado::all();
+
+        // Obtener solo las órdenes de compra que no han sido recibidas
+        $ordenesCompra = OrdenesCompra::where('status', 2)
+            ->whereNotIn('idOrden_compra', function ($query) {
+                $query->select('Ordenes_compras_idOrden_compra')
+                      ->from('recepciones_mercancias');
+            })
+            ->get();
+
+        $suministros = Suministro::all(['idSuministro', 'nombre_suministro']);
+
+        return view('recepcion', compact('empleados', 'ordenesCompra', 'suministros', 'recepcionesMercancia'));
+    }
 
 public function store(Request $request)
 {
@@ -62,63 +96,31 @@ public function store(Request $request)
             'estado.*.in' => 'El estado debe ser "aceptar" o "rechazar".',
         ]);
 
-        // Verificar si la orden de compra ya ha sido registrada
-    $ordenCompraId = $validatedData['Ordenes_compras_idOrden_compra'];
-    $recepcionExistente = RecepcionesMercancia::where('Ordenes_compras_idOrden_compra', $ordenCompraId)->first();
-
-    if ($recepcionExistente) {
-        return redirect()->route('recepcion.create')->with('error', 'Esta orden de compra ya ha sido registrada en una recepción.');
-    }
-
-    // Si no existe, proceder con el registro
-    $recepcion = new RecepcionesMercancia;
-    $recepcion->fecha_recepcion = Carbon::now();
-    $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
-    $recepcion->Ordenes_compras_idOrden_compra = $validatedData['Ordenes_compras_idOrden_compra'];
-    
-    // Calcular la cantidad total recibida
-    $cantidadTotalRecibida = array_sum($validatedData['cantidadRecibida']);
-    $recepcion->cantidad_recibida = $cantidadTotalRecibida;
-    
-    // Determinar el estado general de la recepción
-    $estadoGeneral = in_array('rechazar', $validatedData['estado']) ? 0 : 1;
-    $recepcion->status = $estadoGeneral;
-    
-    // prueba
-    $recepcion = new RecepcionesMercancia;
-    $recepcion->fecha_recepcion = Carbon::now();
-    $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
-    $recepcion->Ordenes_compras_idOrden_compra = $validatedData['Ordenes_compras_idOrden_compra'];
-    
-    // Calcular la cantidad total recibida
-    $cantidadTotalRecibida = array_sum($validatedData['cantidadRecibida']);
-    $recepcion->cantidad_recibida = $cantidadTotalRecibida;
-    
-    // Determinar el estado general de la recepción
-    $aceptados = 0;
-    $rechazados = 0;
-    $total_items = count($validatedData['estado']);
-
-    foreach ($validatedData['estado'] as $estado) {
-        if ($estado === 'aceptar') {
-            $aceptados++;
-        } elseif ($estado === 'rechazar') {
-            $rechazados++;
-        }
-    }
-
-    if ($aceptados === $total_items) {
-        $recepcion->status = 1; // Todos aceptados
-    } elseif ($rechazados === $total_items) {
-        $recepcion->status = 0; // Todos rechazados
-    } else {
-        $recepcion->status = 2; // Parcial
-    }
-    
-    $recepcion->save();
-
-    return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía registrada exitosamente');
-}
+         // Verificar si la orden de compra ya ha sido registrada
+         $ordenCompraId = $validatedData['Ordenes_compras_idOrden_compra'];
+         $recepcionExistente = RecepcionesMercancia::where('Ordenes_compras_idOrden_compra', $ordenCompraId)->first();
+ 
+         if ($recepcionExistente) {
+             return redirect()->route('recepcion.create')->with('error', 'Esta orden de compra ya ha sido registrada en una recepción.');
+         }
+ 
+         // Si no existe, proceder con el registro
+         $recepcion = new RecepcionesMercancia;
+         $recepcion->fecha_recepcion = Carbon::now();
+         $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
+         $recepcion->Ordenes_compras_idOrden_compra = $validatedData['Ordenes_compras_idOrden_compra'];
+ 
+         // Calcular la cantidad total recibida
+         $cantidadTotalRecibida = array_sum($validatedData['cantidadRecibida']);
+         $recepcion->cantidad_recibida = $cantidadTotalRecibida;
+ 
+         // Determinar el estado general de la recepción
+         $recepcion->status = $this->determinarEstadoGeneral($validatedData['estado'], $validatedData['cantidadRecibida']);
+ 
+         $recepcion->save();
+ 
+         return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía registrada exitosamente');
+     }
 
     // cierre de prueba
 
@@ -155,25 +157,25 @@ public function store(Request $request)
 
 
 public function edit($id)
-{
-    $recepcion = RecepcionesMercancia::with(['ordenes_compra.detalles_ordenes_compras.suministro', 'empleado'])->findOrFail($id);
-    $empleados = Empleado::all();
-    
-    // Obtener los detalles de la recepción
-    $detallesRecepcion = $recepcion->ordenes_compra->detalles_ordenes_compras->map(function ($detalle) use ($recepcion) {
-        return [
-            'Suministro_idSuministro' => $detalle->Suministro_idSuministro,
-            'nombre_suministro' => $detalle->suministro->nombre_suministro,
-            'cantidad_pedida' => $detalle->cantidad_pedida,
-            'cantidad_recibida' => $recepcion->cantidad_recibida, // Esto asume que la cantidad recibida es la misma para todos los suministros
-            'status' => $recepcion->status
-        ];
-    });
-    
-    return view('recepcionedit', compact('recepcion', 'empleados', 'detallesRecepcion'));
-}
+    {
+        $recepcion = RecepcionesMercancia::with(['ordenes_compra.detalles_ordenes_compras.suministro', 'empleado'])->findOrFail($id);
+        $empleados = Empleado::all();
 
-public function update(Request $request, $id)
+        // Obtener los detalles de la recepción
+        $detallesRecepcion = $recepcion->ordenes_compra->detalles_ordenes_compras->map(function ($detalle) use ($recepcion) {
+            return [
+                'Suministro_idSuministro' => $detalle->Suministro_idSuministro,
+                'nombre_suministro' => $detalle->suministro->nombre_suministro,
+                'cantidad_pedida' => $detalle->cantidad_pedida,
+                'cantidad_recibida' => $recepcion->cantidad_recibida, // Esto asume que la cantidad recibida es la misma para todos los suministros
+                'status' => $recepcion->status
+            ];
+        });
+
+        return view('recepcionedit', compact('recepcion', 'empleados', 'detallesRecepcion'));
+    }
+
+    public function update(Request $request, $id)
 {
     $recepcion = RecepcionesMercancia::findOrFail($id);
 
@@ -188,35 +190,22 @@ public function update(Request $request, $id)
 
     $recepcion->fecha_recepcion = $validatedData['fecha_recepcion'];
     $recepcion->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];
-    
-    // Calcular la cantidad total recibida
-    $cantidadTotalRecibida = array_sum($validatedData['cantidad_recibida']);
-    $recepcion->cantidad_recibida = $cantidadTotalRecibida;
-    
-    // Determinar el estado general de la recepción
-    $aceptados = 0;
-    $rechazados = 0;
-    $total_items = count($validatedData['estado']);
 
-    foreach ($validatedData['estado'] as $estado) {
-        if ($estado == 1) {
-            $aceptados++;
-        } elseif ($estado == 0) {
-            $rechazados++;
-        }
+    // Update the received quantities and statuses
+    $totalRecibido = 0;
+    foreach ($validatedData['cantidad_recibida'] as $key => $cantidad) {
+        $recepcion->ordenes_compra->detalles_ordenes_compras[$key]->cantidad_recibida = $cantidad;
+        $recepcion->ordenes_compra->detalles_ordenes_compras[$key]->status = $validatedData['estado'][$key];
+        $totalRecibido += $cantidad;
     }
 
-    if ($aceptados === $total_items) {
-        $recepcion->status = 1; // Todos aceptados
-    } elseif ($rechazados === $total_items) {
-        $recepcion->status = 0; // Todos rechazados
-    } else {
-        $recepcion->status = 2; // Parcial
-    }
-    
+    $recepcion->cantidad_recibida = $totalRecibido;
+
+    // Determine the overall status of the reception
+    $recepcion->status = $this->determinarEstadoGeneral($validatedData['estado'], $validatedData['cantidad_recibida']);
+
     $recepcion->save();
 
     return redirect()->route('recepcion.create')->with('success', 'Recepción de mercancía actualizada exitosamente');
 }
-
 }

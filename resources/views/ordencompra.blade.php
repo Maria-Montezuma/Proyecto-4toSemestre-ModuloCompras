@@ -146,17 +146,17 @@
                         </td>
                         <td>
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $orden->idOrden_compra }}" title="Ver">
-    Ver <i class="fas fa-eye"></i>
-</a>
-                            @if($orden->esCancelable())
-    <form action="{{ route('ordenescompra.cancel', $orden->idOrden_compra) }}" method="POST" class="d-inline">
-        @csrf
-        @method('PATCH')
-        <button type="submit" class="btn btn-sm btn-danger" title="Cancelar" onclick="return confirm('¿Estás seguro de que quieres cancelar esta orden de compra?')">
-            Cancelar <i class="fas fa-ban"></i>
-        </button> 
-    </form>
-@endif
+                    Ver <i class="fas fa-eye"></i>
+                </a>
+                    @if($orden->esCancelable())
+                    <form action="{{ route('ordenescompra.cancel', $orden->idOrden_compra) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-sm btn-danger" title="Cancelar" onclick="return confirm('¿Estás seguro de que quieres cancelar esta orden de compra?')">
+                            Cancelar <i class="fas fa-ban"></i>
+                        </button> 
+                    </form>
+                @endif
                         </td>
                     </tr>
                 @endforeach

@@ -126,27 +126,64 @@
                     <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
                     <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                     <td>
-    @if($recepcion->status == 1)
-        <span class="badge bg-success p-2">Aceptado</span>
-    @elseif($recepcion->status == 0)
-        <span class="badge bg-danger p-2">Rechazado</span>
-    @else
-        <span class="badge bg-secondary p-2">Parcial</span>
-    @endif
-    <br>
-    <small>{{ $recepcion->status_details }}</small>
-</td>
+                    @if($recepcion->status == 1)
+                        <span class="badge bg-success p-2">Aceptado</span>
+                    @elseif($recepcion->status == 0)
+                        <span class="badge bg-danger p-2">Rechazado</span>
+                    @else
+                        <span class="badge bg-dark p-2">Parcial</span>
+                    @endif
+                    <br>
+                    <small>{{ $recepcion->status_details }}</small>
+                </td>
                     <td>
-                        <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-warning me-1">
+                        <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
                             Editar <i class="fas fa-edit"></i>
                         </a>
-                    </td>
+
+                        <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-toggle="modal" data-target="#viewModal" title="Ver">
+                    Ver <i class="fas fa-eye"></i>
+                </a>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 </div>
+
+
+<!-- prueba de modal -->
+<!-- Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">Información de la Recepción</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se rellenará con la información de la recepción -->
+                <p><strong>ID:</strong> <span id="recepcion-id"></span></p>
+                <p><strong>Fecha de Recepción:</strong> <span id="recepcion-fecha"></span></p>
+                <p><strong>Status:</strong> <span id="recepcion-status"></span></p>
+                <p><strong>Cantidad Recibida:</strong> <span id="recepcion-cantidad"></span></p>
+                <p><strong>Empleado:</strong> <span id="recepcion-empleado"></span></p>
+                <p><strong>Orden de Compra:</strong> <span id="recepcion-orden"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- cierre de modal -->
+
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -207,4 +244,36 @@ function actualizarTablaProductos(detalles) {
     });
 }
 </script>
+
+
+<!-- prueba de AJAX -->
+<script>
+    $(document).ready(function() {
+        $('.btn-view').on('click', function() {
+            var recepcionId = $(this).data('id');
+
+            $.ajax({
+                url: '/recepcion/' + recepcionId,
+                method: 'GET',
+                success: function(data) {
+                    $('#recepcion-id').text(data.idRecepcion_mercancia);
+                    $('#recepcion-fecha').text(data.fecha_recepcion);
+                    $('#recepcion-status').text(data.status);
+                    $('#recepcion-cantidad').text(data.cantidad_recibida);
+                    // $('#recepcion-empleado').text(data.empleado.nombre); // Ajusta según tus relaciones
+                    // $('#recepcion-orden').text(data.ordenes_compra.numero_orden); // Ajusta según tus relaciones
+
+                    
+                },
+                error: function() {
+                    alert('Error al obtener los datos de la recepción.');
+                }
+            });
+        });
+    });
+
+
+    
+</script>
+
 @endsection
