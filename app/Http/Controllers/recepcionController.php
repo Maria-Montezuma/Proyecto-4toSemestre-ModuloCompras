@@ -213,10 +213,31 @@ public function edit($id)
 }
 public function show($id)
 {
-    $recepcion = RecepcionesMercancia::with(['ordenes_compra', 'empleado'])->findOrFail($id);
-    return response()->json($recepcion);
+    $recepcion = RecepcionesMercancia::with(['ordenes_compra.detalles_ordenes_compras.suministro', 'empleado'])->findOrFail($id);
+
+    // Mapeo de los detalles de la recepción
+    $detalles = $recepcion->ordenes_compra->detalles_ordenes_compras->map(function ($detalle) use ($recepcion) {
+        return [
+            'suministro' => $detalle->suministro ? $detalle->suministro->nombre_suministro : 'No especificado',
+            'cantidad_pedida' => $detalle->cantidad_pedida,
+            'cantidad_recibida' => $detalle->cantidad_recibida,
+            'estado' => $detalle->status == 1 ? 'Aceptado' : 'Rechazado',
+        ];
+    });
+
+    return response()->json([
+        'idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
+        'ordenes_compra' => [
+            'idOrden_compra' => $recepcion->ordenes_compra->idOrden_compra,
+        ],
+        'empleado' => [
+            'nombre_empleado' => $recepcion->empleado->nombre_empleado,
+            'apellido_empleado' => $recepcion->empleado->apellido_empleado,
+        ],
+        'fecha_recepcion' => $recepcion->fecha_recepcion->format('Y-m-d'),
+        'status' => $recepcion->status,
+        'detalles' => $detalles,
+    ]);
 }
-
-
 
 }

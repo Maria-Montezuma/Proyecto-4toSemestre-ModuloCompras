@@ -270,7 +270,6 @@ $(document).ready(function() {
                             <p><strong>Empleado:</strong> ${data.empleado.nombre_empleado} ${data.empleado.apellido_empleado}</p>
                             <p><strong>Fecha de Recepción:</strong> ${new Date(data.fecha_recepcion).toLocaleDateString()}</p>
                             <p><strong>Estado:</strong> ${statusBadge}</p>
-                            <p><strong>Detalles del Estado:</strong> ${data.status_details}</p>
                         </div>
                     </div>
                     <hr style="border-color: #8B4513;">
@@ -286,12 +285,12 @@ $(document).ready(function() {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${data.detalles ? data.detalles.map(detalle => `
+                                ${data.detalles.length > 0 ? data.detalles.map(detalle => `
                                     <tr>
-                                        <td>${detalle.suministro ? detalle.suministro.nombre_suministro : 'No especificado'}</td>
-                                        <td>${detalle.cantidad_pedida || 'No especificada'}</td>
-                                        <td>${detalle.cantidad_recibida || 'No especificada'}</td>
-                                        <td>${detalle.estado || 'No especificado'}</td>
+                                        <td>${detalle.suministro}</td>
+                                        <td>${detalle.cantidad_pedida}</td>
+                                        <td>${detalle.cantidad_recibida}</td>
+                                        <td>${detalle.estado}</td>
                                     </tr>
                                 `).join('') : '<tr><td colspan="4" class="text-center">No hay detalles disponibles</td></tr>'}
                             </tbody>
@@ -308,6 +307,7 @@ $(document).ready(function() {
         });
     });
 });
+
 </script>
 
 
