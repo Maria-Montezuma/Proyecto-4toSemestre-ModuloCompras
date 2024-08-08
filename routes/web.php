@@ -55,7 +55,6 @@ Route::put('/recepcion/{id}', [RecepcionController::class, 'update'])->name('rec
 // PRUEBA1
 Route::get('/recepcion/{id}', [RecepcionController::class, 'show'])->name('recepcion.show');
 
-
 Route::get('/api/orden-compra/{id}', [RecepcionController::class, 'getOrdenCompraDetails']);
 
 

@@ -141,9 +141,9 @@
                             Editar <i class="fas fa-edit"></i>
                         </a>
 
-                        <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-toggle="modal" data-target="#viewModal" title="Ver">
-                    Ver <i class="fas fa-eye"></i>
-                </a>
+                        <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
+                        Ver <i class="fas fa-eye"></i>
+                        </a>
                 </tr>
                 @endforeach
             </tbody>
@@ -152,39 +152,30 @@
 </div>
 
 
-<!-- prueba de modal -->
 <!-- Modal -->
-<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="recepcionDetailModal" tabindex="-1" aria-labelledby="recepcionDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewModalLabel">Información de la Recepción</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header" style="background-color: #8B4513; color: white;">
+                <h5 class="modal-title" id="recepcionDetailModalLabel"><i class="fas fa-box-open me-2"></i>Detalles de la Recepción de Mercancía</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <!-- Aquí se rellenará con la información de la recepción -->
-                <p><strong>ID:</strong> <span id="recepcion-id"></span></p>
-                <p><strong>Fecha de Recepción:</strong> <span id="recepcion-fecha"></span></p>
-                <p><strong>Status:</strong> <span id="recepcion-status"></span></p>
-                <p><strong>Cantidad Recibida:</strong> <span id="recepcion-cantidad"></span></p>
-                <p><strong>Empleado:</strong> <span id="recepcion-empleado"></span></p>
-                <p><strong>Orden de Compra:</strong> <span id="recepcion-orden"></span></p>
+            <div class="modal-body" style="background-color: #FFEFD5;">
+                <div id="recepcionDetailContent">
+                    <!-- Aquí se cargará el contenido del modal -->
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <div class="modal-footer" style="background-color: #DEB887;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
-
-
 <!-- cierre de modal -->
 
 
 
-
+<!-- detalles de la orden de compra -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ordenCompraSelect = document.getElementById('Ordenes_compras_idOrden_compra');
@@ -246,34 +237,79 @@ function actualizarTablaProductos(detalles) {
 </script>
 
 
-<!-- prueba de AJAX -->
+<!-- Modal funcion  -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<!-- Tu script personalizado -->
+
 <script>
-    $(document).ready(function() {
-        $('.btn-view').on('click', function() {
-            var recepcionId = $(this).data('id');
-
-            $.ajax({
-                url: '/recepcion/' + recepcionId,
-                method: 'GET',
-                success: function(data) {
-                    $('#recepcion-id').text(data.idRecepcion_mercancia);
-                    $('#recepcion-fecha').text(data.fecha_recepcion);
-                    $('#recepcion-status').text(data.status);
-                    $('#recepcion-cantidad').text(data.cantidad_recibida);
-                    // $('#recepcion-empleado').text(data.empleado.nombre); // Ajusta según tus relaciones
-                    // $('#recepcion-orden').text(data.ordenes_compra.numero_orden); // Ajusta según tus relaciones
-
-                    
-                },
-                error: function() {
-                    alert('Error al obtener los datos de la recepción.');
+$(document).ready(function() {
+    $('.view-order').click(function(e) {
+        e.preventDefault();
+        var recepcionId = $(this).data('id');
+        $.ajax({
+            url: '/recepcion/' + recepcionId,
+            type: 'GET',
+            success: function(data) {
+                var statusBadge = '';
+                if (data.status == 1) {
+                    statusBadge = '<span class="badge" style="background-color: #228B22;">Aceptado</span>';
+                } else if (data.status == 0) {
+                    statusBadge = '<span class="badge" style="background-color: #B22222;">Rechazado</span>';
+                } else {
+                    statusBadge = '<span class="badge" style="background-color: #4682B4;">Parcial</span>';
                 }
-            });
+
+                var modalContent = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 style="color: #8B4513;"><i class="fas fa-info-circle me-2"></i>Información General</h6>
+                            <p><strong>ID Recepción:</strong> ${data.idRecepcion_mercancia}</p>
+                            <p><strong>ID Orden de Compra:</strong> ${data.ordenes_compra.idOrden_compra}</p>
+                            <p><strong>Empleado:</strong> ${data.empleado.nombre_empleado} ${data.empleado.apellido_empleado}</p>
+                            <p><strong>Fecha de Recepción:</strong> ${new Date(data.fecha_recepcion).toLocaleDateString()}</p>
+                            <p><strong>Estado:</strong> ${statusBadge}</p>
+                            <p><strong>Detalles del Estado:</strong> ${data.status_details}</p>
+                        </div>
+                    </div>
+                    <hr style="border-color: #8B4513;">
+                    <h6 style="color: #8B4513;"><i class="fas fa-list me-2"></i>Detalles de la Recepción</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" style="background-color: #FFEFD5;">
+                            <thead style="background-color: #D2691E; color: white;">
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Pedida</th>
+                                    <th>Cantidad Recibida</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.detalles ? data.detalles.map(detalle => `
+                                    <tr>
+                                        <td>${detalle.suministro ? detalle.suministro.nombre_suministro : 'No especificado'}</td>
+                                        <td>${detalle.cantidad_pedida || 'No especificada'}</td>
+                                        <td>${detalle.cantidad_recibida || 'No especificada'}</td>
+                                        <td>${detalle.estado || 'No especificado'}</td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="4" class="text-center">No hay detalles disponibles</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                $('#recepcionDetailContent').html(modalContent);
+                $('#recepcionDetailModal').modal('show');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                alert('Error al cargar los detalles de la recepción');
+            }
         });
     });
-
-
-    
+});
 </script>
+
+
 
 @endsection
