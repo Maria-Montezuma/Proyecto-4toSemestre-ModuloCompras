@@ -75,7 +75,6 @@
         <thead>
             <tr>
                 <th>Suministro</th>
-                <th>Cantidad</th>
                 <th>Cantidad Recibida</th>
                 <th>Estado</th>
             </tr>
@@ -91,9 +90,6 @@
                         </option>
                         @endforeach
                     </select>
-                </td>
-                <td>
-                    <input type="number" class="form-control" id="cantidad_pedida" name="cantidad_pedida" required>
                 </td>
                 <td>
                     <input type="number" class="form-control" id="cantidad_recibida" name="cantidad_recibida" required>
