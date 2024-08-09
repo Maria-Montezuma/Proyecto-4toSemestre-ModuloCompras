@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\SolicitudController;
-use App\Http\Controllers\recepcionController;
+use App\Http\Controllers\RecepcionMercanciaController;
 use App\Http\Controllers\OrdenCompraController;
 use App\Models\Solicitude;
 
@@ -34,30 +34,21 @@ Route::get('/ordenescompra/{id}', [OrdenCompraController::class, 'show'])->name(
 Route::patch('/ordenescompra/{id}/cancel', [OrdenCompraController::class, 'cancel'])->name('ordenescompra.cancel');
 
 
-// ruta de suminsitrosXproveedor
+// Ruta de suminsitrosXproveedor
 Route::get('/get-suministros-por-proveedor/{idProveedor}', [OrdenCompraController::class, 'getSuministrosPorProveedor']);
 
+
+//Rutas de recepcion 
 Route::get('/recepcion', function () {
     return view('recepcion');
 })->name('recepcion');
 
-Route::get('/recepcion', function () {
-    return view('recepcion');
-})->name('recepcion');
+Route::get('/recepcion', [RecepcionMercanciaController::class, 'create'])->name('recepcion');
+Route::get('/recepcion/create', [RecepcionMercanciaController::class, 'create'])->name('recepcion.create');
+Route::post('/recepcion/store', [RecepcionMercanciaController::class, 'store'])->name('recepcion.store');
+Route::get('/recepcion/{id}/edit', [RecepcionMercanciaController::class, 'edit'])->name('recepcion.edit');
 
-Route::get('/recepcion', [recepcionController::class, 'create'])->name('recepcion');
-Route::get('/recepcion/create', [RecepcionController::class, 'create'])->name('recepcion.create');
-Route::post('/recepcion/store', [RecepcionController::class, 'store'])->name('recepcion.store');
-Route::get('/recepcion/search', [RecepcionController::class, 'search'])->name('recepcion.search');
-Route::get('/recepcion/{id}/edit', [RecepcionController::class, 'edit'])->name('recepcion.edit');
-Route::put('/recepcion/{id}', [RecepcionController::class, 'update'])->name('recepcion.update');
-
-// PRUEBA1
-Route::get('/recepcion/{id}', [RecepcionController::class, 'show'])->name('recepcion.show');
-
-Route::get('/api/orden-compra/{id}', [RecepcionController::class, 'getOrdenCompraDetails']);
-
-
+//Rutas de devolucion 
 Route::get('/devolucion', function () {
     return view('devolucion');
 })->name('devolucion');
