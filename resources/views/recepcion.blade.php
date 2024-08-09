@@ -102,8 +102,8 @@
         </tbody>
     </table>
     <div>
-        <button type="button" id="addRow" class="btn btn-secondary mt-2" title="Agregar Fila">Agregar Fila <i class="fa-solid fa-plus"></i></button>
         <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
+        <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila <i class="fa-solid fa-plus"></i></button>
         <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
     </div>
 </form>
