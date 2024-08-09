@@ -14,7 +14,6 @@
     <!-- Detalles de la Orden de Compra -->
    <div id="infoOrdenCompra" class="mb-4"></div>
 
-
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -28,16 +27,15 @@
     <form action="{{ route('recepcion.store') }}" method="POST">
     @csrf
     <div class="row mb-3">
-
-      <!-- los detalles de como aparecen los datos en recepcion de orden de compra -->
-             <div id="detallesOrdenCompra" style="display: none;">
-    <h4>Detalles de la Orden de Compra</h4>
-    <p><strong>Fecha de emisión:</strong> <span id="fechaEmision"></span></p>
-    <p><strong>Fecha de entrega:</strong> <span id="fechaEntrega"></span></p>
-    <p><strong>Proveedor:</strong> <span id="proveedor"></span></p>
-    <p><strong>Total:</strong> <span id="total"></span></p>
-    <div id="listaProductos"></div>
-            </div>
+        <!-- los detalles de como aparecen los datos en recepcion de orden de compra -->
+        <div id="detallesOrdenCompra" style="display: none;">
+            <h4>Detalles de la Orden de Compra</h4>
+            <p><strong>Fecha de emisión:</strong> <span id="fechaEmision"></span></p>
+            <p><strong>Fecha de entrega:</strong> <span id="fechaEntrega"></span></p>
+            <p><strong>Proveedor:</strong> <span id="proveedor"></span></p>
+            <p><strong>Total:</strong> <span id="total"></span></p>
+            <div id="listaProductos"></div>
+        </div>
 
         <!-- Orden de compra -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
@@ -79,9 +77,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class="product-row">
                 <td>
-                    <select class="form-control" id="suministro" name="suministro" required>
+                    <select class="form-control" name="suministro[]" required>
                         <option value="">Seleccionar Suministro</option>
                         @foreach($suministros as $suministro)
                         <option value="{{ $suministro->id }}" {{ old('suministro') == $suministro->id ? 'selected' : '' }}>
@@ -91,10 +89,10 @@
                     </select>
                 </td>
                 <td>
-                    <input type="number" class="form-control" id="cantidad_recibida" name="cantidad_recibida" required>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" required>
                 </td>
                 <td>
-                    <select class="form-select" name="status" required>
+                    <select class="form-select" name="status[]" required>
                         <option value="">Seleccionar...</option>
                         <option value="aceptar" {{ old('estado') == 'aceptar' ? 'selected' : '' }}>Aceptar</option>
                         <option value="rechazar" {{ old('estado') == 'rechazar' ? 'selected' : '' }}>Rechazar</option>
@@ -104,6 +102,7 @@
         </tbody>
     </table>
     <div>
+        <button type="button" id="addRow" class="btn btn-secondary mt-2" title="Agregar Fila">Agregar Fila <i class="fa-solid fa-plus"></i></button>
         <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
         <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
     </div>
@@ -195,10 +194,33 @@ $(document).ready(function() {
             $('#detallesOrdenCompra').hide();
         }
     });
+
+    // Add new row to the table
+    $('#addRow').click(function() {
+        var newRow = '<tr class="product-row">' +
+            '<td>' +
+            '<select class="form-control" name="suministro[]" required>' +
+            '<option value="">Seleccionar Suministro</option>' +
+            '@foreach($suministros as $suministro)' +
+            '<option value="{{ $suministro->id }}">{{ $suministro->nombre_suministro }}</option>' +
+            '@endforeach' +
+            '</select>' +
+            '</td>' +
+            '<td>' +
+            '<input type="number" class="form-control" name="cantidad_recibida[]" required>' +
+            '</td>' +
+            '<td>' +
+            '<select class="form-select" name="status[]" required>' +
+            '<option value="">Seleccionar...</option>' +
+            '<option value="aceptar">Aceptar</option>' +
+            '<option value="rechazar">Rechazar</option>' +
+            '</select>' +
+            '</td>' +
+            '</tr>';
+        $('#productTable tbody').append(newRow);
+    });
 });
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 @endsection
-
-////ahhhhhh zoro te amo 
