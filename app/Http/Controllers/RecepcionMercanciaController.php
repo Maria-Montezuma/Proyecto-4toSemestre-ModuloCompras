@@ -7,6 +7,7 @@ use App\Models\Empleado;
 use App\Models\Suministro;
 use App\Models\OrdenesCompra;
 use App\Models\DetallesRecepcionesMercancia;
+use App\Models\DetallesOrdenesCompra;
 use Carbon\Carbon;
 use App\Models\RecepcionesMercancia;
 
@@ -56,36 +57,45 @@ class RecepcionMercanciaController extends Controller
 
     return response()->json($detalles);
 }
-
 public function store(Request $request)
-    {
-        $request->validate([
-            'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
-            'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
-            'fecha_recepcion' => 'required|date',
-            'suministro.*' => 'required|exists:suministros,id',
-            'cantidad_recibida.*' => 'required|integer|min:1',
-            'status.*' => 'required|in:aceptar,rechazar',
-        ]);
+{
+    $request->validate([
+        'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
+        'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
+        'fecha_recepcion' => 'required|date',
+     
+        'cantidad_recibida.*' => 'required|integer|min:1',
+        'status.*' => 'required|in:aceptar,rechazar',
+    ]);
+    
 
-        // Crear la recepción de mercancía
-        $recepcion = RecepcionesMercancia::create([
-            'Ordenes_compras_idOrden_compra' => $request->Ordenes_compras_idOrden_compra,
-            'Empleados_idEmpleados' => $request->Empleados_idEmpleados,
-            'fecha_recepcion' => $request->fecha_recepcion,
-            'status_general_recepcion' => 0 // Puedes ajustar el valor por defecto según tu lógica
-        ]);
-
-        // Crear los detalles de recepción
-        foreach ($request->suministro as $index => $suministroId) {
+    // Crear la recepción de mercancía
+    $recepcion = RecepcionesMercancia::create([
+        'Ordenes_compras_idOrden_compra' => $request->Ordenes_compras_idOrden_compra,
+        'Empleados_idEmpleados' => $request->Empleados_idEmpleados,
+        'fecha_recepcion' => $request->fecha_recepcion,
+        'status_general_recepcion' => 0 // Puedes ajustar el valor por defecto según tu lógica
+    ]);
+    
+    // Crear los detalles de recepción
+    foreach ($request->suministro as $index => $idSuministro) {
+        $detalleOrdenCompra = DetallesOrdenesCompra::where('Suministro_idSuministro', $idSuministro)
+            ->where('Ordenes_compra_idOrden_compra', $request->Ordenes_compras_idOrden_compra)
+            ->first();
+    
+        if ($detalleOrdenCompra) {
             DetallesRecepcionesMercancia::create([
                 'cantidad_recibida' => $request->cantidad_recibida[$index],
                 'status_recepcion' => $request->status[$index] === 'aceptar' ? 1 : 0,
-                'Detalles_Ordenes_compra_idDetalles_Ordenes_compra' => $suministroId,
+                'Detalles_Ordenes_compra_idDetalles_Ordenes_compra' => $detalleOrdenCompra->idDetalles_Ordenes_compra,
                 'Recepciones_mercancias_idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
             ]);
         }
-
-        return redirect()->route('recepcion.index')->with('success', 'Recepción de mercancía creada exitosamente.');
     }
+    
+
+    return redirect()->route('recepcion')->with('success', 'Recepción de mercancía creada exitosamente.');
+}
+
+
 }

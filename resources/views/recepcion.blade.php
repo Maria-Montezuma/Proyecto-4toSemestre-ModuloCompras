@@ -199,11 +199,13 @@ $(document).ready(function() {
     $('#addRow').click(function() {
         var newRow = $('#productTable tbody tr:first').clone();
         newRow.find('input').val('');
+        newRow.find('select').val('');
         $('#productTable tbody').append(newRow);
     });
 
 });
 </script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 @endsection
