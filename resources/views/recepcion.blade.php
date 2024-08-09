@@ -35,7 +35,6 @@
     <p><strong>Fecha de emisión:</strong> <span id="fechaEmision"></span></p>
     <p><strong>Fecha de entrega:</strong> <span id="fechaEntrega"></span></p>
     <p><strong>Proveedor:</strong> <span id="proveedor"></span></p>
-    <p><strong>Subtotal:</strong> <span id="subtotal"></span></p>
     <p><strong>Total:</strong> <span id="total"></span></p>
     <div id="listaProductos"></div>
             </div>
@@ -174,10 +173,9 @@ $(document).ready(function() {
                     $('#fechaEmision').text(data.fecha_emision);
                     $('#fechaEntrega').text(data.fecha_entraga);
                     $('#proveedor').text(data.proveedor);
-                    $('#subtotal').text(data.subtotal_pagar);
                     $('#total').text(data.total_pagar);
                     
-                    var productosHtml = '<table class="table"><thead><tr><th>Suministro</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr></thead><tbody>';
+                    var productosHtml = '<table class="table"><thead><tr><th>Suministro</th><th>Cantidad Pedida</th><th>Precio Unitario</th><th>Subtotal</th></tr></thead><tbody>';
                     data.productos.forEach(function(producto) {
                         productosHtml += '<tr><td>' + producto.nombre_suministro + 
                                          '</td><td>' + producto.cantidad + 
