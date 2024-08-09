@@ -15,14 +15,13 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idRecepcion_mercancia
  * @property Carbon $fecha_recepcion
- * @property int $status
- * @property int $cantidad_recibida
  * @property int $Empleados_idEmpleados
  * @property int $Ordenes_compras_idOrden_compra
+ * @property int $status_general_recepcion
  * 
  * @property Empleado $empleado
  * @property OrdenesCompra $ordenes_compra
- * @property Collection|Devolucione[] $devoluciones
+ * @property Collection|DetallesRecepcionesMercancia[] $detalles_recepciones_mercancias
  *
  * @package App\Models
  */
@@ -34,18 +33,16 @@ class RecepcionesMercancia extends Model
 
 	protected $casts = [
 		'fecha_recepcion' => 'datetime',
-		'status' => 'int',
-		'cantidad_recibida' => 'int',
 		'Empleados_idEmpleados' => 'int',
-		'Ordenes_compras_idOrden_compra' => 'int'
+		'Ordenes_compras_idOrden_compra' => 'int',
+		'status_general_recepcion' => 'int'
 	];
 
 	protected $fillable = [
 		'fecha_recepcion',
-		'status',
-		'cantidad_recibida',
 		'Empleados_idEmpleados',
-		'Ordenes_compras_idOrden_compra'
+		'Ordenes_compras_idOrden_compra',
+		'status_general_recepcion'
 	];
 
 	public function empleado()
@@ -58,22 +55,8 @@ class RecepcionesMercancia extends Model
 		return $this->belongsTo(OrdenesCompra::class, 'Ordenes_compras_idOrden_compra');
 	}
 
-	public function devoluciones()
+	public function detalles_recepciones_mercancias()
 	{
-		return $this->hasMany(Devolucione::class, 'Recepciones_mercancias_idRecepcion_mercancia');
+		return $this->hasMany(DetallesRecepcionesMercancia::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
-
-	public function getStatusDetailsAttribute()
-{
-    switch($this->status) {
-        case 0:
-            return 'Todos los suministros rechazados';
-        case 1:
-            return 'Todos los suministros aceptados';
-        case 2:
-            return 'Recepción parcial';
-        default:
-            return 'Estado desconocido';
-    }
-}
 }

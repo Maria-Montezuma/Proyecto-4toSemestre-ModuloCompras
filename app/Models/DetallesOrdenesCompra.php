@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property OrdenesCompra $ordenes_compra
  * @property Suministro $suministro
+ * @property Collection|DetallesRecepcionesMercancia[] $detalles_recepciones_mercancias
  *
  * @package App\Models
  */
@@ -53,5 +55,10 @@ class DetallesOrdenesCompra extends Model
 	public function suministro()
 	{
 		return $this->belongsTo(Suministro::class, 'Suministro_idSuministro');
+	}
+
+	public function detalles_recepciones_mercancias()
+	{
+		return $this->hasMany(DetallesRecepcionesMercancia::class, 'Detalles_Ordenes_compra_idDetalles_Ordenes_compra');
 	}
 }

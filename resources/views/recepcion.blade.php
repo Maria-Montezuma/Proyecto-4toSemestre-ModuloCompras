@@ -225,9 +225,9 @@ function actualizarTablaProductos(detalles) {
         cell1.innerHTML = `<select class="form-control" name="suministro[]">
                             <option value="${detalle.suministro_id}" selected>${detalle.nombre_suministro}</option>
                            </select>`;
-        cell2.innerHTML = `<input type="number" class="form-control" name="cantidadPedida[]" value="${detalle.cantidad_pedida}" readonly>`;
-        cell3.innerHTML = `<input type="number" class="form-control" name="cantidadRecibida[]" value="${detalle.cantidad_pedida}" required>`;
-        cell4.innerHTML = `<select class="form-select" name="estado[]" required>
+                            cell2.innerHTML = `<input type="number" class="form-control" name="cantidadPedida[]" value="${detalle.cantidad_pedida}" readonly>`;
+                            cell3.innerHTML = `<input type="number" class="form-control" name="cantidadRecibida[]" value="${detalle.cantidad_recibida}" required>`;
+                            cell4.innerHTML = `<select class="form-select" name="estado[]" required>
                             <option value="">Seleccionar...</option>
                             <option value="aceptar">Aceptar</option>
                             <option value="rechazar">Rechazar</option>

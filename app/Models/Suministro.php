@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $categorias_idcategorias
  * 
  * @property Categoria $categoria
- * @property Collection|DetallesDevolucione[] $detalles_devoluciones
  * @property Collection|DetallesOrdenesCompra[] $detalles_ordenes_compras
  * @property Collection|Proveedore[] $proveedores
  *
@@ -44,11 +43,6 @@ class Suministro extends Model
 	public function categoria()
 	{
 		return $this->belongsTo(Categoria::class, 'categorias_idcategorias');
-	}
-
-	public function detalles_devoluciones()
-	{
-		return $this->hasMany(DetallesDevolucione::class, 'Suministro_idSuministro');
 	}
 
 	public function detalles_ordenes_compras()

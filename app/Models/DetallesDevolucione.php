@@ -15,10 +15,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $cantidad_devuelta
  * @property string $motivo
  * @property int $Devoluciones_idDevoluciones
- * @property int $Suministro_idSuministro
+ * @property string $status_devolucion
+ * @property int $Detalles_Recepciones_Mercancias_idDetalle_Recepcion_Mercancia
  * 
+ * @property DetallesRecepcionesMercancia $detalles_recepciones_mercancia
  * @property Devolucione $devolucione
- * @property Suministro $suministro
  *
  * @package App\Models
  */
@@ -31,23 +32,24 @@ class DetallesDevolucione extends Model
 	protected $casts = [
 		'cantidad_devuelta' => 'int',
 		'Devoluciones_idDevoluciones' => 'int',
-		'Suministro_idSuministro' => 'int'
+		'Detalles_Recepciones_Mercancias_idDetalle_Recepcion_Mercancia' => 'int'
 	];
 
 	protected $fillable = [
 		'cantidad_devuelta',
 		'motivo',
 		'Devoluciones_idDevoluciones',
-		'Suministro_idSuministro'
+		'status_devolucion',
+		'Detalles_Recepciones_Mercancias_idDetalle_Recepcion_Mercancia'
 	];
+
+	public function detalles_recepciones_mercancia()
+	{
+		return $this->belongsTo(DetallesRecepcionesMercancia::class, 'Detalles_Recepciones_Mercancias_idDetalle_Recepcion_Mercancia');
+	}
 
 	public function devolucione()
 	{
 		return $this->belongsTo(Devolucione::class, 'Devoluciones_idDevoluciones');
-	}
-
-	public function suministro()
-	{
-		return $this->belongsTo(Suministro::class, 'Suministro_idSuministro');
 	}
 }
