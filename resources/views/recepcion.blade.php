@@ -28,6 +28,18 @@
     <form action="{{ route('recepcion.store') }}" method="POST">
     @csrf
     <div class="row mb-3">
+
+      <!-- los detalles de como aparecen los datos en recepcion de orden de compra -->
+             <div id="detallesOrdenCompra" style="display: none;">
+    <h4>Detalles de la Orden de Compra</h4>
+    <p><strong>Fecha de emisión:</strong> <span id="fechaEmision"></span></p>
+    <p><strong>Fecha de entrega:</strong> <span id="fechaEntrega"></span></p>
+    <p><strong>Proveedor:</strong> <span id="proveedor"></span></p>
+    <p><strong>Subtotal:</strong> <span id="subtotal"></span></p>
+    <p><strong>Total:</strong> <span id="total"></span></p>
+    <div id="listaProductos"></div>
+            </div>
+
         <!-- Orden de compra -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <label for="ordenCompra" class="form-label">N° Orden de compra</label>
@@ -151,6 +163,46 @@
     </div>
 </div>
 
-
+<!-- para llamar la orden de compra a recepcion -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#Ordenes_compras_idOrden_compra').change(function() {
+        var idOrdenCompra = $(this).val();
+        if(idOrdenCompra) {
+            $.ajax({
+                url: '/get-orden-compra-details/' + idOrdenCompra,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#fechaEmision').text(data.fecha_emision);
+                    $('#fechaEntrega').text(data.fecha_entraga);
+                    $('#proveedor').text(data.proveedor);
+                    $('#subtotal').text(data.subtotal_pagar);
+                    $('#total').text(data.total_pagar);
+                    
+                    var productosHtml = '<table class="table"><thead><tr><th>Suministro</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr></thead><tbody>';
+                    data.productos.forEach(function(producto) {
+                        productosHtml += '<tr><td>' + producto.nombre_suministro + 
+                                         '</td><td>' + producto.cantidad + 
+                                         '</td><td>$' + producto.precio_unitario + 
+                                         '</td><td>$' + producto.subtotal + '</td></tr>';
+                    });
+                    productosHtml += '</tbody></table>';
+                    $('#listaProductos').html(productosHtml);
+                    
+                    $('#detallesOrdenCompra').show();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                }
+            });
+        } else {
+            $('#detallesOrdenCompra').hide();
+        }
+    });
+});
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 @endsection

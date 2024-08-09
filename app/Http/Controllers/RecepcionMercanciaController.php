@@ -12,6 +12,7 @@ use App\Models\RecepcionesMercancia;
 
 class RecepcionMercanciaController extends Controller
 {
+    // mostrar empleados y id de orden de compra en recepcion
     public function create()
     {
         $recepcionesMercancia = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'empleado'])->orderBy('idRecepcion_mercancia', 'desc')->get();
@@ -29,4 +30,30 @@ class RecepcionMercanciaController extends Controller
         
         return view('recepcion', compact('empleados', 'ordenesCompra', 'suministros', 'recepcionesMercancia'));
     }
+
+
+    // traer los detalles de orden de compra a recepcion
+    public function getDetails($id)
+{
+    $ordenCompra = OrdenesCompra::with(['proveedore', 'detalles_ordenes_compras.suministro'])
+        ->findOrFail($id);
+
+    $detalles = [
+        'fecha_emision' => Carbon::parse($ordenCompra->fecha_emision)->format('d/m/Y'),
+        'fecha_entraga' => Carbon::parse($ordenCompra->fecha_entraga)->format('d/m/Y'),
+        'proveedor' => $ordenCompra->proveedore->nombre_empresa,
+        'subtotal_pagar' => number_format($ordenCompra->subtotal_pagar, 2),
+        'total_pagar' => number_format($ordenCompra->total_pagar, 2),
+        'productos' => $ordenCompra->detalles_ordenes_compras->map(function($detalle) {
+            return [
+                'nombre_suministro' => $detalle->suministro->nombre_suministro,
+                'cantidad' => $detalle->cantidad_pedida,
+                'precio_unitario' => number_format($detalle->precio_unitario, 2),
+                'subtotal' => number_format($detalle->subtotal, 2)
+            ];
+        })
+    ];
+
+    return response()->json($detalles);
+}
 }
