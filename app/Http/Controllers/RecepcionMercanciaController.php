@@ -63,26 +63,25 @@ public function store(Request $request)
         'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
         'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
         'fecha_recepcion' => 'required|date',
-     
+        'nombre_suministro.*' => 'required|exists:suministros,idSuministro',
         'cantidad_recibida.*' => 'required|integer|min:1',
         'status.*' => 'required|in:aceptar,rechazar',
     ]);
-    
 
     // Crear la recepción de mercancía
     $recepcion = RecepcionesMercancia::create([
         'Ordenes_compras_idOrden_compra' => $request->Ordenes_compras_idOrden_compra,
         'Empleados_idEmpleados' => $request->Empleados_idEmpleados,
         'fecha_recepcion' => $request->fecha_recepcion,
-        'status_general_recepcion' => 0 // Puedes ajustar el valor por defecto según tu lógica
+        'status_recepcion' => 0 // O el valor adecuado según tu lógica
     ]);
-    
-    // Crear los detalles de recepción
+
+    // Guardar los detalles de la recepción de mercancía
     foreach ($request->suministro as $index => $idSuministro) {
         $detalleOrdenCompra = DetallesOrdenesCompra::where('Suministro_idSuministro', $idSuministro)
             ->where('Ordenes_compra_idOrden_compra', $request->Ordenes_compras_idOrden_compra)
             ->first();
-    
+
         if ($detalleOrdenCompra) {
             DetallesRecepcionesMercancia::create([
                 'cantidad_recibida' => $request->cantidad_recibida[$index],
@@ -92,10 +91,8 @@ public function store(Request $request)
             ]);
         }
     }
-    
 
     return redirect()->route('recepcion')->with('success', 'Recepción de mercancía creada exitosamente.');
 }
-
 
 }

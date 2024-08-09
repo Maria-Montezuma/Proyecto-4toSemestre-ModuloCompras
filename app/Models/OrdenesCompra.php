@@ -77,9 +77,7 @@ class OrdenesCompra extends Model
 	{
 		return $this->hasMany(RecepcionesMercancia::class, 'Ordenes_compras_idOrden_compra');
 	}
-
-	protected $dates = ['fecha_emision', 'fecha_entraga', 'enviado_at'];
-
+	
 	public function getEnviadoAtAttribute($value)
     {
         return $value ? Carbon::parse($value) : null;
@@ -90,7 +88,7 @@ class OrdenesCompra extends Model
         if (!$this->enviado_at) {
             return $this->status == 1;
         }
-        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(15)->isFuture();
+        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(2)->isFuture();
     }
 
 	public function actualizarEstadoSiNecesario()

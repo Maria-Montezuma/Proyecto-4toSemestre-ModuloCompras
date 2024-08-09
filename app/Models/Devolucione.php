@@ -16,9 +16,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $idDevoluciones
  * @property Carbon $fecha_devolucion
  * @property int $Emplados_idEmplados
- * @property int $status_general_devolucion
+ * @property int $Recepciones_mercancias_idRecepcion_mercancia
  * 
  * @property Empleado $empleado
+ * @property RecepcionesMercancia $recepciones_mercancia
  * @property Collection|DetallesDevolucione[] $detalles_devoluciones
  *
  * @package App\Models
@@ -32,18 +33,23 @@ class Devolucione extends Model
 	protected $casts = [
 		'fecha_devolucion' => 'datetime',
 		'Emplados_idEmplados' => 'int',
-		'status_general_devolucion' => 'int'
+		'Recepciones_mercancias_idRecepcion_mercancia' => 'int'
 	];
 
 	protected $fillable = [
 		'fecha_devolucion',
 		'Emplados_idEmplados',
-		'status_general_devolucion'
+		'Recepciones_mercancias_idRecepcion_mercancia'
 	];
 
 	public function empleado()
 	{
 		return $this->belongsTo(Empleado::class, 'Emplados_idEmplados');
+	}
+
+	public function recepciones_mercancia()
+	{
+		return $this->belongsTo(RecepcionesMercancia::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
 
 	public function detalles_devoluciones()

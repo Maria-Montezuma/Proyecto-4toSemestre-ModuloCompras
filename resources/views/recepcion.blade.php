@@ -89,7 +89,7 @@
                     </select>
                 </td>
                 <td>
-                    <input type="number" class="form-control" name="cantidad_recibida[]" required>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" required min=1>
                 </td>
                 <td>
                     <select class="form-select" name="status[]" required>
@@ -205,6 +205,7 @@ $(document).ready(function() {
 
 });
 </script>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

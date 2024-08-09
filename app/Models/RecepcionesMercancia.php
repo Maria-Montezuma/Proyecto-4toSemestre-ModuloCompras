@@ -17,11 +17,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $fecha_recepcion
  * @property int $Empleados_idEmpleados
  * @property int $Ordenes_compras_idOrden_compra
- * @property int $status_general_recepcion
  * 
  * @property Empleado $empleado
  * @property OrdenesCompra $ordenes_compra
  * @property Collection|DetallesRecepcionesMercancia[] $detalles_recepciones_mercancias
+ * @property Collection|Devolucione[] $devoluciones
  *
  * @package App\Models
  */
@@ -34,15 +34,13 @@ class RecepcionesMercancia extends Model
 	protected $casts = [
 		'fecha_recepcion' => 'datetime',
 		'Empleados_idEmpleados' => 'int',
-		'Ordenes_compras_idOrden_compra' => 'int',
-		'status_general_recepcion' => 'int'
+		'Ordenes_compras_idOrden_compra' => 'int'
 	];
 
 	protected $fillable = [
 		'fecha_recepcion',
 		'Empleados_idEmpleados',
-		'Ordenes_compras_idOrden_compra',
-		'status_general_recepcion'
+		'Ordenes_compras_idOrden_compra'
 	];
 
 	public function empleado()
@@ -58,5 +56,10 @@ class RecepcionesMercancia extends Model
 	public function detalles_recepciones_mercancias()
 	{
 		return $this->hasMany(DetallesRecepcionesMercancia::class, 'Recepciones_mercancias_idRecepcion_mercancia');
+	}
+
+	public function devoluciones()
+	{
+		return $this->hasMany(Devolucione::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
 }
