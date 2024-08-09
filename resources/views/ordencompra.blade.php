@@ -96,13 +96,6 @@
         </button>
     </div>
 </form>
-
-
-
-
-
-
- 
         </div>
 
         <!-- lista -->

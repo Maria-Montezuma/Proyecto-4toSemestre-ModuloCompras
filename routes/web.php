@@ -47,6 +47,8 @@ Route::get('/recepcion', [RecepcionMercanciaController::class, 'create'])->name(
 Route::get('/recepcion/create', [RecepcionMercanciaController::class, 'create'])->name('recepcion.create');
 Route::post('/recepcion/store', [RecepcionMercanciaController::class, 'store'])->name('recepcion.store');
 Route::get('/recepcion/{id}/edit', [RecepcionMercanciaController::class, 'edit'])->name('recepcion.edit');
+Route::post('/recepcion/store', [RecepcionMercanciaController::class, 'store'])->name('recepcion.store');
+
 
 // ruta para llamar a orden de compra a recepcion
 Route::get('/get-orden-compra-details/{id}', [RecepcionMercanciaController::class, 'getDetails']);

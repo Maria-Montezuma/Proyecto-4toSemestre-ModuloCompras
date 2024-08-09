@@ -103,7 +103,7 @@
     </table>
     <div>
         <button type="reset" class="btn btn-primary mt-2" title="Limpiar"> Limpiar <i class="fa-solid fa-broom"></i></button>
-        <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila <i class="fa-solid fa-plus"></i></button>
+        <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila </button>
         <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Guardar <i class="fa-solid fa-box-archive"></i></button>
     </div>
 </form>
@@ -197,28 +197,11 @@ $(document).ready(function() {
 
     // Add new row to the table
     $('#addRow').click(function() {
-        var newRow = '<tr class="product-row">' +
-            '<td>' +
-            '<select class="form-control" name="suministro[]" required>' +
-            '<option value="">Seleccionar Suministro</option>' +
-            '@foreach($suministros as $suministro)' +
-            '<option value="{{ $suministro->id }}">{{ $suministro->nombre_suministro }}</option>' +
-            '@endforeach' +
-            '</select>' +
-            '</td>' +
-            '<td>' +
-            '<input type="number" class="form-control" name="cantidad_recibida[]" required>' +
-            '</td>' +
-            '<td>' +
-            '<select class="form-select" name="status[]" required>' +
-            '<option value="">Seleccionar...</option>' +
-            '<option value="aceptar">Aceptar</option>' +
-            '<option value="rechazar">Rechazar</option>' +
-            '</select>' +
-            '</td>' +
-            '</tr>';
+        var newRow = $('#productTable tbody tr:first').clone();
+        newRow.find('input').val('');
         $('#productTable tbody').append(newRow);
     });
+
 });
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
