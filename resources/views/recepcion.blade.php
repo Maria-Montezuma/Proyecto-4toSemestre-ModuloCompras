@@ -219,39 +219,56 @@ $(document).ready(function() {
 
 // Manejar el clic en el botón "Ver"
 $('.view-order').click(function(e) {
-        e.preventDefault();
-        var recepcionId = $(this).data('id');
-        
-        $.ajax({
-            url: '/recepcion/' + recepcionId,
-            type: 'GET',
-            success: function(response) {
-                var html = '<div class="recepcion-info">';
-                html += '<h4 class="mb-3">Recepción #' + response.idRecepcion_mercancia + '</h4>';
-                html += '<p class="mb-2"><strong>Fecha de Recepción:</strong> ' + response.fecha_recepcion + '</p>';
-                html += '<p class="mb-2"><strong>Empleado:</strong> ' + response.empleado.nombre_empleado + ' ' + response.empleado.apellido_empleado + '</p>';
-                html += '<p class="mb-0"><strong>Orden de Compra:</strong> ' + response.ordenes_compra.idOrden_compra + '</p>';
-                html += '</div>';
-                
-                html += '<h5 class="mb-3">Detalles de los productos:</h5>';
-                html += '<div class="table-responsive"><table class="table table-striped table-hover detalles-table"><thead class="table-light"><tr><th>Suministro</th><th>Cantidad Recibida</th><th>Estado</th></tr></thead><tbody>';
-                response.detalles_recepciones_mercancias.forEach(function(detalle) {
-                    html += '<tr>';
-                    html += '<td>' + detalle.suministro.nombre_suministro + '</td>';
-                    html += '<td>' + detalle.cantidad_recibida + '</td>';
-                    html += '<td><span class="status-badge badge ' + (detalle.status_recepcion == 1 ? 'bg-success' : 'bg-danger') + '">' 
-                         + (detalle.status_recepcion == 1 ? 'Aceptado' : 'Rechazado') + '</span></td>';
-                    html += '</tr>';
-                });
-                html += '</tbody></table></div>';
+    e.preventDefault();
+    var recepcionId = $(this).data('id');
+    
+    $.ajax({
+        url: '/recepcion/' + recepcionId,
+        type: 'GET',
+        success: function(response) {
+            console.log(response); // Para depuración
 
-                $('#modalBody').html(html);
-            },
-            error: function() {
-                $('#modalBody').html('<div class="alert alert-danger">Hubo un error al cargar los detalles. Por favor, intenta de nuevo.</div>');
-            }
-        });
+            var html = '<div class="recepcion-info">';
+            html += '<h4 class="mb-3">Recepción #' + response.idRecepcion_mercancia + '</h4>';
+            html += '<p class="mb-2"><strong>Fecha de Recepción:</strong> ' + response.fecha_recepcion + '</p>';
+            html += '<p class="mb-2"><strong>Empleado:</strong> ' + response.empleado.nombre_empleado + ' ' + response.empleado.apellido_empleado + '</p>';
+            html += '<p class="mb-2"><strong>Orden de Compra:</strong> ' + response.ordenes_compra.idOrden_compra + '</p>';
+            html += '<p class="mb-0"><strong>Proveedor:</strong> ' + response.ordenes_compra.proveedore.nombre_empresa + '</p>';
+            html += '</div>';
+            
+            html += '<h5 class="mb-3">Detalles de los productos:</h5>';
+            html += '<div class="table-responsive"><table class="table table-striped table-hover detalles-table">' +
+                    '<thead class="table-light"><tr>' +
+                    '<th>Suministro Pedido</th>' +
+                    '<th>Suministro Recibido</th>' +
+                    '<th>Cantidad Pedida</th>' +
+                    '<th>Cantidad Recibida</th>' +
+                    '<th>Precio Unitario</th>' +
+                    '<th>Subtotal</th>' +
+                    '<th>Estado</th>' +
+                    '</tr></thead><tbody>';
+            response.detalles.forEach(function(detalle) {
+                html += '<tr>';
+                html += '<td>' + detalle.suministro_pedido + '</td>';
+                html += '<td>' + detalle.suministro_recibido + '</td>';
+                html += '<td>' + detalle.cantidad_pedida + '</td>';
+                html += '<td>' + detalle.cantidad_recibida + '</td>';
+                html += '<td>$' + (detalle.precio_unitario !== 'N/A' ? parseFloat(detalle.precio_unitario).toFixed(2) : 'N/A') + '</td>';
+                html += '<td>$' + (detalle.subtotal !== 'N/A' ? parseFloat(detalle.subtotal).toFixed(2) : 'N/A') + '</td>';
+                html += '<td><span class="status-badge badge ' + (detalle.status_recepcion == 1 ? 'bg-success' : 'bg-danger') + '">' 
+                     + (detalle.status_recepcion == 1 ? 'Aceptado' : 'Rechazado') + '</span></td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table></div>';
+
+            $('#modalBody').html(html);
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            $('#modalBody').html('<div class="alert alert-danger">Hubo un error al cargar los detalles. Por favor, intenta de nuevo.</div>');
+        }
     });
+});
 </script>
 
 

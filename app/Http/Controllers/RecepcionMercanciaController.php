@@ -86,10 +86,34 @@ public function store(Request $request)
     return redirect()->route('recepcion')->with('success', 'Recepción de mercancía creada exitosamente.');
 }
 
-    public function show($id)
+public function show($id)
 {
-    $recepcion = RecepcionesMercancia::with(['empleado', 'ordenes_compra', 'detalles_recepciones_mercancias.suministro'])
-        ->findOrFail($id);
+    $recepcion = RecepcionesMercancia::with([
+        'empleado', 
+        'ordenes_compra.detalles_ordenes_compras.suministro',
+        'ordenes_compra.proveedore',
+        'detalles_recepciones_mercancias.suministro'
+    ])->findOrFail($id);
+
+    $detallesOrdenCompra = $recepcion->ordenes_compra->detalles_ordenes_compras->keyBy('Suministro_idSuministro');
+
+    $detallesRecepcion = $recepcion->detalles_recepciones_mercancias->map(function ($detalle) use ($detallesOrdenCompra) {
+        $detalleOrdenCompra = $detallesOrdenCompra->get($detalle->Suministros_idSuministro);
+        
+        return [
+            'suministro_pedido' => $detalleOrdenCompra ? $detalleOrdenCompra->suministro->nombre_suministro : 'N/A',
+            'suministro_recibido' => $detalle->suministro->nombre_suministro,
+            'cantidad_pedida' => $detalleOrdenCompra ? $detalleOrdenCompra->cantidad_pedida : 'N/A',
+            'cantidad_recibida' => $detalle->cantidad_recibida,
+            'precio_unitario' => $detalleOrdenCompra ? $detalleOrdenCompra->precio_unitario : 'N/A',
+            'subtotal' => $detalleOrdenCompra ? $detalleOrdenCompra->subtotal : 'N/A',
+            'status_recepcion' => $detalle->status_recepcion
+        ];
+    });
+
+    $recepcion = $recepcion->toArray();
+    $recepcion['detalles'] = $detallesRecepcion;
+
     return response()->json($recepcion);
 }
 
