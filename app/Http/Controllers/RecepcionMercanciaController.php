@@ -116,5 +116,49 @@ public function show($id)
 
     return response()->json($recepcion);
 }
+// editar recepcion
+public function edit($id)
+{
+    $recepcion = RecepcionesMercancia::with(['empleado', 'ordenes_compra.proveedore', 'detalles_recepciones_mercancias.suministro'])->findOrFail($id);
+    $empleados = Empleado::all();
+    $ordenesCompra = OrdenesCompra::all();
+    $suministros = Suministro::all();
+
+    return view('recepcionedit', compact('recepcion', 'empleados', 'ordenesCompra', 'suministros'));
+}
+
+public function update(Request $request, $id)
+{
+    $recepcion = RecepcionesMercancia::findOrFail($id);
+
+    $validatedData = $request->validate([
+        'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
+        'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
+        'fecha_recepcion' => 'required|date',
+        'suministro' => 'required|array',
+        'cantidad_recibida' => 'required|array',
+        'status' => 'required|array',
+    ]);
+
+    $recepcion->update([
+        'Ordenes_compras_idOrden_compra' => $validatedData['Ordenes_compras_idOrden_compra'],
+        'Empleados_idEmpleados' => $validatedData['Empleados_idEmpleados'],
+        'fecha_recepcion' => $validatedData['fecha_recepcion'],
+    ]);
+
+    // Actualizar o crear detalles de recepción
+    foreach ($request->suministro as $index => $suministroId) {
+        $recepcion->detalles_recepciones_mercancias()->updateOrCreate(
+            ['Suministros_idSuministro' => $suministroId],
+            [
+                'cantidad_recibida' => $request->cantidad_recibida[$index],
+                'status_recepcion' => $request->status[$index] == 'aceptar' ? 1 : 0,
+            ]
+        );
+    }
+
+    return redirect()->route('recepcion.create')->with('success', 'Recepción actualizada exitosamente.');
+}
+
 
 }

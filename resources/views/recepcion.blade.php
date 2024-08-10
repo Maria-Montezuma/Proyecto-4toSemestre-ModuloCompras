@@ -163,7 +163,8 @@
                 </td>
                     <td>
                     <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
-                        Editar <i class="fas fa-edit"></i>
+    Editar <i class="fas fa-edit"></i>
+</a>
                     </a>
 
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">

@@ -5,7 +5,7 @@
     <h2 class="mb-4 text-center">Editar Recepción de Mercancía</h2>
 
     @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -18,10 +18,18 @@
     @csrf
     @method('PUT')
     <div class="row mb-3">
+        <!-- Orden de compra -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <label for="ordenCompra" class="form-label">N° Orden de compra</label>
-            <input type="text" class="form-control" value="{{ $recepcion->ordenes_compra->idOrden_compra }} - {{ $recepcion->ordenes_compra->proveedore->nombre_empresa }}" readonly>
+            <select class="form-control" id="Ordenes_compras_idOrden_compra" name="Ordenes_compras_idOrden_compra" required>
+                @foreach($ordenesCompra as $ordenCompra)
+                <option value="{{ $ordenCompra->idOrden_compra }}" {{ $recepcion->Ordenes_compras_idOrden_compra == $ordenCompra->idOrden_compra ? 'selected' : '' }}>
+                    {{ $ordenCompra->idOrden_compra }} - {{ $ordenCompra->proveedore->nombre_empresa }}
+                </option>
+                @endforeach
+            </select>
         </div>
+        <!-- Empleado -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <label for="empleado" class="form-label">Empleado</label>
             <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
@@ -32,50 +40,65 @@
                 @endforeach
             </select>
         </div>
+        <!-- Fecha de Recepcion de Mercancia  -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <label for="fecha_recepcion" class="form-label">Fecha de Recepcion</label>
             <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" value="{{ $recepcion->fecha_recepcion->format('Y-m-d') }}" required>
         </div>
     </div>
 
-    <table class="table table-bordered">
+    <table id="productTable" class="table table-bordered">
         <thead>
             <tr>
                 <th>Suministro</th>
-                <th>Cantidad Pedida</th>
                 <th>Cantidad Recibida</th>
                 <th>Estado</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($detallesRecepcion as $key => $detalle)
-            <tr>
-                <td>
-                    <input type="text" class="form-control" value="{{ $detalle['nombre_suministro'] }}" readonly>
-                    <input type="hidden" name="suministro[]" value="{{ $detalle['Suministro_idSuministro'] }}">
-                </td>
-                <td>
-                    <input type="number" class="form-control" name="cantidad_pedida[]" value="{{ $detalle['cantidad_pedida'] }}" readonly>
-                </td>
-                <td>
-                    <input type="number" class="form-control" name="cantidad_recibida[]" value="{{ $detalle['cantidad_recibida'] }}" required>
-                </td>
-                <td>
-                    <select class="form-select" name="estado[]" required>
-                        <option value="1" {{ $detalle['status'] == 1 ? 'selected' : '' }}>Aceptado</option>
-                        <option value="0" {{ $detalle['status'] == 0 ? 'selected' : '' }}>Rechazado</option>
-                    </select>
-                </td>
-            </tr>
-            @endforeach
+        @foreach($recepcion->detalles_recepciones_mercancias as $detalle)
+<tr class="product-row">
+    <td>
+    <select class="form-control" name="suministro[]" required>
+        @foreach($suministros as $suministro)
+        <option value="{{ $suministro->idSuministro }}" {{ $detalle->Suministros_idSuministro == $suministro->idSuministro ? 'selected' : '' }}>
+            {{ $suministro->nombre_suministro }}
+        </option>
+        @endforeach
+    </select>
+    </td>
+    <td>
+        <input type="number" class="form-control" name="cantidad_recibida[]" value="{{ $detalle->cantidad_recibida }}" required min=1>
+    </td>
+    <td>
+        <select class="form-select" name="status[]" required>
+            <option value="aceptar" {{ $detalle->status_recepcion == 1 ? 'selected' : '' }}>Aceptar</option>
+            <option value="rechazar" {{ $detalle->status_recepcion == 0 ? 'selected' : '' }}>Rechazar</option>
+        </select>
+    </td>
+</tr>
+@endforeach
         </tbody>
     </table>
-
     <div>
-        <button type="submit" class="btn btn-success me-2 mt-2" title="Actualizar">Actualizar <i class="fa-solid fa-check"></i></button>
-        <a href="{{ route('recepcion.create') }}" class="btn btn-secondary mt-2" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
+        <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila </button>
+        <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Actualizar <i class="fa-solid fa-box-archive"></i></button>
     </div>
 </form>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Add new row to the table
+    $('#addRow').click(function() {
+        var newRow = $('#productTable tbody tr:first').clone();
+        newRow.find('input').val('');
+        newRow.find('select').val('');
+        $('#productTable tbody').append(newRow);
+    });
+});
+</script>
+
 @endsection
