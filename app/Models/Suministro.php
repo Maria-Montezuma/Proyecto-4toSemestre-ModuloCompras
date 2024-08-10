@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property Categoria $categoria
  * @property Collection|DetallesOrdenesCompra[] $detalles_ordenes_compras
+ * @property Collection|DetallesRecepcionesMercancia[] $detalles_recepciones_mercancias
  * @property Collection|Proveedore[] $proveedores
  *
  * @package App\Models
@@ -48,6 +49,11 @@ class Suministro extends Model
 	public function detalles_ordenes_compras()
 	{
 		return $this->hasMany(DetallesOrdenesCompra::class, 'Suministro_idSuministro');
+	}
+
+	public function detalles_recepciones_mercancias()
+	{
+		return $this->hasMany(DetallesRecepcionesMercancia::class, 'Suministros_idSuministro');
 	}
 
 	public function proveedores()

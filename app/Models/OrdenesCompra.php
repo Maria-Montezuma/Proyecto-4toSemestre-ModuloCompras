@@ -88,7 +88,7 @@ class OrdenesCompra extends Model
         if (!$this->enviado_at) {
             return $this->status == 1;
         }
-        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(2)->isFuture();
+        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(15)->isFuture();
     }
 
 	public function actualizarEstadoSiNecesario()
