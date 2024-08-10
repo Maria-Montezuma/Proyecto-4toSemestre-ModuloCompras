@@ -130,31 +130,3 @@
     max-height: 200px; overflow-y: scroll;
 }
 
-/* modal */
-.modal-header {
-    border-bottom: 2px solid #ffcd70;
-    background-color: #aa8658;
-}
-.recepcion-info {
-    background-color: #f8f9fa;
-    border-radius: 0.25rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
-.recepcion-info h4 {
-    color: #495057;
-    margin-bottom: 1rem;
-}
-.detalles-table th {
-    background-color: #aa8658;
-}
-.status-badge {
-    padding: 0.25em 0.6em;
-    font-size: 75%;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: 0.25rem;
-}

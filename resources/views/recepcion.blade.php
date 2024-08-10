@@ -27,20 +27,27 @@
     <form action="{{ route('recepcion.store') }}" method="POST">
     @csrf
     <div class="row mb-3">
-        <!-- Modal para ver detalles de recepción -->
-            <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title" id="viewModalLabel">Detalles de Recepción de Mercancía</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal para ver detalles de recepción -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #8B4513; color: white;">
+                    <h5 class="modal-title" id="viewModalLabel">
+                        <i class="fas fa-file-invoice me-2"></i>Detalles de Recepción de Mercancía
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="modalBody">
-                    <!-- Los detalles se cargarán aquí dinámicamente -->
+                <div class="modal-body" style="background-color: #FFF8DC;">
+                    <div id="modalBody" class="p-3">
+                        <!-- Los detalles se cargarán aquí dinámicamente -->
+                    </div>
                 </div>
+                <div class="modal-footer" style="background-color: #DEB887;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
-            </div>
+        </div>
+    </div>
 
         <!-- los detalles de como aparecen los datos en recepcion de orden de compra -->
         <div id="detallesOrdenCompra" style="display: none;">
