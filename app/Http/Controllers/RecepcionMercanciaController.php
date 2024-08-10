@@ -86,4 +86,11 @@ public function store(Request $request)
     return redirect()->route('recepcion')->with('success', 'Recepción de mercancía creada exitosamente.');
 }
 
+    public function show($id)
+{
+    $recepcion = RecepcionesMercancia::with(['empleado', 'ordenes_compra', 'detalles_recepciones_mercancias.suministro'])
+        ->findOrFail($id);
+    return response()->json($recepcion);
+}
+
 }

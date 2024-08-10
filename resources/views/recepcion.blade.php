@@ -27,6 +27,21 @@
     <form action="{{ route('recepcion.store') }}" method="POST">
     @csrf
     <div class="row mb-3">
+        <!-- Modal para ver detalles de recepción -->
+            <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="viewModalLabel">Detalles de Recepción de Mercancía</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Los detalles se cargarán aquí dinámicamente -->
+                </div>
+                </div>
+            </div>
+            </div>
+
         <!-- los detalles de como aparecen los datos en recepcion de orden de compra -->
         <div id="detallesOrdenCompra" style="display: none;">
             <h4>Detalles de la Orden de Compra</h4>
@@ -140,12 +155,12 @@
                     <small>{{ $recepcion->status_details }}</small>
                 </td>
                     <td>
-                        <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
-                            Editar <i class="fas fa-edit"></i>
-                        </a>
+                    <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
+                        Editar <i class="fas fa-edit"></i>
+                    </a>
 
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
-                        Ver <i class="fas fa-eye"></i>
+                            Ver <i class="fas fa-eye"></i>
                         </a>
                 </tr>
                 @endforeach
@@ -201,6 +216,42 @@ $(document).ready(function() {
     });
 
 });
+
+// Manejar el clic en el botón "Ver"
+$('.view-order').click(function(e) {
+        e.preventDefault();
+        var recepcionId = $(this).data('id');
+        
+        $.ajax({
+            url: '/recepcion/' + recepcionId,
+            type: 'GET',
+            success: function(response) {
+                var html = '<div class="recepcion-info">';
+                html += '<h4 class="mb-3">Recepción #' + response.idRecepcion_mercancia + '</h4>';
+                html += '<p class="mb-2"><strong>Fecha de Recepción:</strong> ' + response.fecha_recepcion + '</p>';
+                html += '<p class="mb-2"><strong>Empleado:</strong> ' + response.empleado.nombre_empleado + ' ' + response.empleado.apellido_empleado + '</p>';
+                html += '<p class="mb-0"><strong>Orden de Compra:</strong> ' + response.ordenes_compra.idOrden_compra + '</p>';
+                html += '</div>';
+                
+                html += '<h5 class="mb-3">Detalles de los productos:</h5>';
+                html += '<div class="table-responsive"><table class="table table-striped table-hover detalles-table"><thead class="table-light"><tr><th>Suministro</th><th>Cantidad Recibida</th><th>Estado</th></tr></thead><tbody>';
+                response.detalles_recepciones_mercancias.forEach(function(detalle) {
+                    html += '<tr>';
+                    html += '<td>' + detalle.suministro.nombre_suministro + '</td>';
+                    html += '<td>' + detalle.cantidad_recibida + '</td>';
+                    html += '<td><span class="status-badge badge ' + (detalle.status_recepcion == 1 ? 'bg-success' : 'bg-danger') + '">' 
+                         + (detalle.status_recepcion == 1 ? 'Aceptado' : 'Rechazado') + '</span></td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+
+                $('#modalBody').html(html);
+            },
+            error: function() {
+                $('#modalBody').html('<div class="alert alert-danger">Hubo un error al cargar los detalles. Por favor, intenta de nuevo.</div>');
+            }
+        });
+    });
 </script>
 
 
