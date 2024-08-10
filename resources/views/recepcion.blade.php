@@ -151,16 +151,48 @@
                     <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
                     <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                     <td>
-                    @if($recepcion->status == 1)
-                        <span class="badge bg-success p-2">Aceptado</span>
-                    @elseif($recepcion->status == 0)
-                        <span class="badge bg-danger p-2">Rechazado</span>
-                    @else
-                        <span class="badge bg-dark p-2">Parcial</span>
-                    @endif
-                    <br>
-                    <small>{{ $recepcion->status_details }}</small>
-                </td>
+    <?php
+    $aceptado = false;
+    $rechazado = false;
+    
+    foreach ($recepcion->detalles_recepciones_mercancias as $detalle) {
+        if ($detalle->status_recepcion == 1) {
+            $aceptado = true;
+        } elseif ($detalle->status_recepcion == 0) {
+            $rechazado = true;
+        }
+
+        // Si ambos estados se han encontrado, podemos salir del bucle
+        if ($aceptado && $rechazado) {
+            break;
+        }
+    }
+
+    // Asignar el estatus basado en la combinación de estados
+    if ($aceptado && $rechazado) {
+        $status = '<span class="badge bg-dark">Parcial</span>';
+        $statusNumero = 2; // Número para "Parcial"
+    } elseif ($aceptado) {
+        $status = '<span class="badge bg-success">Aceptado</span>';
+        $statusNumero = 1; // Número para "Aceptado"
+    } elseif ($rechazado) {
+        $status = '<span class="badge bg-danger">Rechazado</span>';
+        $statusNumero = 0; // Número para "Rechazado"
+    } else {
+        $status = '<span class="badge bg-secondary">Sin Estado</span>';
+        $statusNumero = null; // Para el caso en que no haya detalles
+    }
+    ?>
+
+    {!! $status !!}
+    @if ($aceptado || $rechazado)
+        <div class="text-muted mt-1">
+            Todos los suministros fueron {{ $aceptado ? 'aceptados' : 'rechazados' }}.
+        </div>
+    @endif
+</td>
+
+
                     <td>
                     <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
     Editar <i class="fas fa-edit"></i>
