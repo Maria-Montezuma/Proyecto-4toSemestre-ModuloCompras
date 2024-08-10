@@ -63,9 +63,9 @@ public function store(Request $request)
         'Ordenes_compras_idOrden_compra' => 'required|exists:ordenes_compras,idOrden_compra',
         'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
         'fecha_recepcion' => 'required|date',
-        'nombre_suministro.*' => 'required|exists:suministros,idSuministro',
-        'cantidad_recibida.*' => 'required|integer|min:1',
-        'status.*' => 'required|in:aceptar,rechazar',
+        'suministro' => 'required|array',
+        'cantidad_recibida' => 'required|array',
+        'status' => 'required|array',
     ]);
 
     // Crear la recepción de mercancía
@@ -73,23 +73,15 @@ public function store(Request $request)
         'Ordenes_compras_idOrden_compra' => $request->Ordenes_compras_idOrden_compra,
         'Empleados_idEmpleados' => $request->Empleados_idEmpleados,
         'fecha_recepcion' => $request->fecha_recepcion,
-        'status_recepcion' => 0 // O el valor adecuado según tu lógica
     ]);
 
     // Guardar los detalles de la recepción de mercancía
     foreach ($request->suministro as $index => $idSuministro) {
-        $detalleOrdenCompra = DetallesOrdenesCompra::where('Suministro_idSuministro', $idSuministro)
-            ->where('Ordenes_compra_idOrden_compra', $request->Ordenes_compras_idOrden_compra)
-            ->first();
-
-        if ($detalleOrdenCompra) {
-            DetallesRecepcionesMercancia::create([
-                'cantidad_recibida' => $request->cantidad_recibida[$index],
-                'status_recepcion' => $request->status[$index] === 'aceptar' ? 1 : 0,
-                'Detalles_Ordenes_compra_idDetalles_Ordenes_compra' => $detalleOrdenCompra->idDetalles_Ordenes_compra,
-                'Recepciones_mercancias_idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
-            ]);
-        }
+        DetallesRecepcionesMercancia::create([
+            'cantidad_recibida' => $request->cantidad_recibida[$index],
+            'status_recepcion' => $request->status[$index] === 'aceptar' ? 1 : 0,
+            'Recepciones_mercancias_idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
+        ]);
     }
 
     return redirect()->route('recepcion')->with('success', 'Recepción de mercancía creada exitosamente.');
