@@ -233,16 +233,30 @@ $('.view-order').click(function(e) {
         url: '/recepcion/' + recepcionId,
         type: 'GET',
         success: function(response) {
-            console.log(response); // Para depuración
+            console.log('Respuesta completa:', response);
 
             var html = '<div class="recepcion-info">';
             html += '<h4 class="mb-3">Recepción #' + response.idRecepcion_mercancia + '</h4>';
-            html += '<p class="mb-2"><strong>Fecha de Recepción:</strong> ' + response.fecha_recepcion + '</p>';
+            
+            // Formateo de la fecha
+            var fechaFormateada = 'Fecha no disponible';
+            if (response.fecha_recepcion) {
+                var fecha = new Date(response.fecha_recepcion);
+                if (!isNaN(fecha.getTime())) {
+                    fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                }
+            }
+            
+            html += '<p class="mb-2"><strong>Fecha de Recepción:</strong> ' + fechaFormateada + '</p>';
             html += '<p class="mb-2"><strong>Empleado:</strong> ' + response.empleado.nombre_empleado + ' ' + response.empleado.apellido_empleado + '</p>';
             html += '<p class="mb-2"><strong>Orden de Compra:</strong> ' + response.ordenes_compra.idOrden_compra + '</p>';
             html += '<p class="mb-0"><strong>Proveedor:</strong> ' + response.ordenes_compra.proveedore.nombre_empresa + '</p>';
             html += '</div>';
-            
+            html += '</div>';
             html += '<h5 class="mb-3">Detalles de los productos:</h5>';
             html += '<div class="table-responsive"><table class="table table-striped table-hover detalles-table">' +
                     '<thead class="table-light"><tr>' +
