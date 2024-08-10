@@ -79,14 +79,11 @@
         <tbody>
             <tr class="product-row">
                 <td>
-                    <select class="form-control" name="suministro[]" required>
-                        <option value="">Seleccionar Suministro</option>
-                        @foreach($suministros as $suministro)
-                        <option value="{{ $suministro->id }}" {{ old('suministro') == $suministro->id ? 'selected' : '' }}>
-                            {{ $suministro->nombre_suministro }}
-                        </option>
-                        @endforeach
-                    </select>
+                <select class="form-control" name="suministro[]" required>
+                    @foreach($suministros as $suministro)
+                    <option value="{{ $suministro->idSuministro }}">{{ $suministro->nombre_suministro }}</option>
+                    @endforeach
+                </select>
                 </td>
                 <td>
                     <input type="number" class="form-control" name="cantidad_recibida[]" required min=1>

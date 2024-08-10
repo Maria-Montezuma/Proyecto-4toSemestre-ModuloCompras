@@ -68,19 +68,18 @@ public function store(Request $request)
         'status' => 'required|array',
     ]);
 
-    // Crear la recepción de mercancía
     $recepcion = RecepcionesMercancia::create([
         'Ordenes_compras_idOrden_compra' => $request->Ordenes_compras_idOrden_compra,
         'Empleados_idEmpleados' => $request->Empleados_idEmpleados,
         'fecha_recepcion' => $request->fecha_recepcion,
     ]);
 
-    // Guardar los detalles de la recepción de mercancía
     foreach ($request->suministro as $index => $idSuministro) {
         DetallesRecepcionesMercancia::create([
             'cantidad_recibida' => $request->cantidad_recibida[$index],
             'status_recepcion' => $request->status[$index] === 'aceptar' ? 1 : 0,
             'Recepciones_mercancias_idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
+            'Suministros_idSuministro' => $idSuministro  // Asegúrate de que este valor no sea nulo
         ]);
     }
 
