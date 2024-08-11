@@ -160,15 +160,12 @@
                 Todos los suministros fueron {{ $statusInfo['status'] }}.
             </div>
         @endif
-         
         </td>
-    
                     <td>
                     <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
-    Editar <i class="fas fa-edit"></i>
-</a>
+                        Editar <i class="fas fa-edit"></i>
                     </a>
-
+                    </a>
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
                             Ver <i class="fas fa-eye"></i>
                         </a></td>

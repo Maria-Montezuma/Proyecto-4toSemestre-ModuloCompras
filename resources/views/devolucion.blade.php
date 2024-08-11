@@ -4,45 +4,69 @@
 <div class="container formulario-container mt-5">
     <h2 class="mb-4 text-center">Solicitar Devolucion</h2>
     <form>
-        <div class="row mb-3">
-            <div class="col-md-4 ">
-                <label for="devolucion">ID de Devolucion</label>
-                <input type="number" class="form-control mt-2" id="devolucion" required placeholder="00012">
-            </div>
-            <div class="col-md-4">
-                <label for="recepcion">ID de Recepcion</label>
-                <input type="text" class="form-control mt-2" id="recepcion" required placeholder="000123">
-            </div>
+    <div class="row mb-3">
+        <!-- Orden de compra -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="ordenCompra" class="form-label">N° Orden de compra</label>
+            <select class="form-control" id="Ordenes_compras_idOrden_compra" name="Ordenes_compras_idOrden_compra" required>
+                <option value="">Seleccione una orden de compra</option>
+            </select>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="suministro" class="form-label">Suministro</label>
-                <input type="text" class="form-control" id="suministro" required>
-            </div>
-            <div class="col-md-4">
-                <label for="cantidad">Cantidad</label>
-                <input type="number" class="form-control mt-2" id="cantidad" required>
-            </div>
+        <!-- Empleado -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="empleado" class="form-label">Empleado</label>
+            <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
+                <option value="">Seleccione un empleado</option>
+            </select>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="proveedor" class="form-label">Proveedor</label>
-                <input type="text" class="form-control" id="proveedor" required>
-            </div>
-            <div class="col-md-4 p-4">
-                <textarea name="text" id="motivo">Motivo</textarea>
-            </div>
+        <!-- Fecha de Recepcion de Mercancia  -->
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+            <label for="fecha_recepcion" class="form-label">Fecha de Devolucion</label>
+            <input type="date" class="form-control" id="fecha_devolucion" name="fecha_recepcion" required>
         </div>
-        <div>
+    </div>
     
-            <button type="submit" class="btn btn-primary me-2" title="Limpiar"> Limpiar 
-            <i class="fa-solid fa-broom"></i></button>
-                <button type="button" class="btn btn-warning me-2" title="Enviar"> Enviar 
-                <i class="fa-solid fa-location-arrow"></i>
-                </button>
-            </div>
-    
-    </form>
+    <table id="productTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Suministro</th>
+                <th>Cantidad Recibida</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="product-row">
+                <td>
+                    <select class="form-control" name="suministro[]" required>
+                        <option value="">Seleccione un suministro</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" required min=1>
+                </td>
+                <td>
+                    <select class="form-select" name="status[]" required>
+                        <option value="aceptar">Aceptar</option>
+                        <option value="rechazar">Rechazar</option>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+<!-- Motivo -->
+<div class="row mb-3">
+        <div class="col-12">
+            <label for="motivo" class="form-label">Motivo</label>
+            <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div>
+        <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila</button>
+        <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar">Actualizar <i class="fa-solid fa-box-archive"></i></button>
+    </div>
+</form>
 </div> 
 
 <div class="container mt-5 ">
