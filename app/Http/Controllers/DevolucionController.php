@@ -9,15 +9,23 @@ use App\Models\RecepcionesMercancia;
 class DevolucionController extends Controller
 {
     public function index()
+{
+    $empleados = Empleado::all();
+
+    $recepciones = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias'])
+    ->whereHas('detalles_recepciones_mercancias', function($query) {
+        $query->where('status_recepcion', 0);
+    })->get();
+
+    return view('devolucion', compact('empleados', 'recepciones'));
+}
+
+public function getRecepcionDetails($id)
     {
-        $empleados = Empleado::all(); // Obtener todos los empleados
+        $recepcion = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias.suministro'])
+            ->findOrFail($id);
 
-        // Obtener recepciones con detalles que tengan estatus 0 (rechazadas)
-        $recepciones = RecepcionesMercancia::whereHas('detalles_recepciones_mercancias', function($query) {
-            $query->where('status_recepcion', 0);
-        })->get();
-
-        return view('devolucion', compact('empleados', 'recepciones'));
+        return response()->json($recepcion);
     }
 }
 

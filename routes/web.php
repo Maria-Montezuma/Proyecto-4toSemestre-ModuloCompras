@@ -62,6 +62,7 @@ Route::get('/devolucion', function () {
 })->name('devolucion');
 Route::get('/devolucion', [DevolucionController::class, 'index'])->name('devolucion');
 
+Route::get('/recepcion-details/{id}', [DevolucionController::class, 'getRecepcionDetails']);
 
 
 // Solicitudes

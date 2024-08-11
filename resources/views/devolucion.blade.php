@@ -109,4 +109,55 @@
         </tbody>
     </table>
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#Recepciones_mercancias_idRecepcion_mercancia').change(function() {
+        var recepcionId = $(this).val();
+        if(recepcionId) {
+            $.ajax({
+                url: '/recepcion-details/' + recepcionId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Limpiar la tabla existente
+                    $('#productTable tbody').empty();
+                    
+                    // Llenar la tabla con los datos recibidos
+                    data.detalles_recepciones_mercancias.forEach(function(detalle) {
+                        var newRow = `
+                            <tr class="product-row">
+                                <td>
+                                    <select class="form-control" name="suministro[]" required>
+                                        <option value="${detalle.suministro.id}">${detalle.suministro.nombre}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="cantidad_recibida[]" value="${detalle.cantidad_recibida}" required min=1>
+                                </td>
+                                <td>
+                                    <select class="form-select" name="status[]" required>
+                                        <option value="aceptar">Aceptar</option>
+                                        <option value="rechazar">Rechazar</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        `;
+                        $('#productTable tbody').append(newRow);
+                    });
+
+                    // Actualizar otros campos si es necesario
+                    $('#fecha_devolucion').val(data.fecha_recepcion);
+                }
+            });
+        } else {
+            $('#productTable tbody').empty();
+        }
+    });
+});
+</script>
+
+
 @endsection
