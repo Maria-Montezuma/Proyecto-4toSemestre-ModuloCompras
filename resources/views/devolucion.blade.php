@@ -2,19 +2,58 @@
 
 @section('content')
 <div class="container formulario-container mt-5">
-    <h2 class="mb-4 text-center">Solicitar Devolucion</h2>
+    <h2 class="mb-4 text-center">Solicitar Devolución</h2>
     <form>
         <div class="row mb-3">
 
-            <!-- Detalles de la Recepción -->
-        <div id="recepcion-details" class="mb-5">
-            <!-- Aquí se mostrará la información de la recepción -->
+        <!-- Detalles Combinados -->
+        <div id="recepcion-details" class="card mb-4">
+            <div class="card-header">
+                <h4>Detalles</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>ID Recepción:</strong> <span id="recepcion-id"></span></p>
+                <p><strong>Fecha Recepción:</strong> <span id="recepcion-fecha"></span></p>
+                <p><strong>Empleado:</strong> <span id="recepcion-empleado"></span></p>
+                <p><strong>Empleado que realizó la Orden:</strong> <span id="recepcion-empleado-orden"></span></p>
+                <div id="recepcion-detalles" class="row">
+                <div class="col-md-6">
+                        <h5>Detalles de Orden de Compra</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Pedida</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orden-detalles-tbody">
+                                <!-- Detalles de orden se insertarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Detalles de Recepción</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Recibida</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recepcion-detalles-tbody">
+                                <!-- Detalles de recepción se insertarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
 
-
-            <!-- Recepcion de Mercancia -->
+            <!-- Recepción de Mercancía -->
             <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-                <label for="recepcion" class="form-label">N° Orden de Recepcion</label>
+                <label for="recepcion" class="form-label">N° Orden de Recepción</label>
                 <select class="form-control" id="Recepciones_mercancias_idRecepcion_mercancia" name="Recepciones_mercancias_idRecepcion_mercancia" required>
                     <option value="">Seleccione una recepción</option>
                     @foreach ($recepciones as $recepcion)
@@ -34,9 +73,9 @@
                     @endforeach
                 </select>
             </div>
-            <!-- Fecha de Recepcion de Mercancia  -->
+            <!-- Fecha de Recepción de Mercancía -->
             <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-                <label for="fecha_recepcion" class="form-label">Fecha de Devolucion</label>
+                <label for="fecha_recepcion" class="form-label">Fecha de Devolución</label>
                 <input type="date" class="form-control" id="fecha_devolucion" name="fecha_recepcion" required>
             </div>
         </div>
@@ -48,6 +87,8 @@
                 <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
             </div>
         </div>
+
+        
 
         <div>
             <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila</button>
@@ -61,13 +102,13 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID Devolucion</th>
-                <th>ID Recepcion</th>
+                <th>ID Devolución</th>
+                <th>ID Recepción</th>
                 <th>Proveedor</th>
                 <th>Estado</th>
                 <th>Suministro</th>
                 <th>Cantidad</th>
-                <th>Accion</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -100,29 +141,16 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    // Limpiar la sección de detalles
-                    $('#recepcion-details').empty();
+                    // Mostrar la información combinada
+                    $('#recepcion-id').text(data.idRecepcion_mercancia);
+                    $('#recepcion-fecha').text(data.fecha_recepcion);
+                    $('#recepcion-empleado').text(data.empleado);
+                    $('#recepcion-empleado-orden').text(data.empleado_orden);
                     
-                    // Mostrar la información de la recepción
-                    var detailsHtml = `
-                        <h4>Detalles de Recepción</h4>
-                        <p><strong>ID Recepción:</strong> ${data.idRecepcion_mercancia}</p>
-                        <p><strong>Fecha Recepción:</strong> ${data.fecha_recepcion}</p>
-                        <p><strong>Empleado:</strong> ${data.empleado}</p>
-                        <p><strong>Detalles:</strong></p>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Suministro</th>
-                                    <th>Cantidad Recibida</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-                    
+                    // Mostrar los detalles de recepción
+                    var detallesHtml = '';
                     data.detalles_recepciones_mercancias.forEach(function(detalle) {
-                        detailsHtml += `
+                        detallesHtml += `
                             <tr>
                                 <td>${detalle.suministro}</td>
                                 <td>${detalle.cantidad_recibida}</td>
@@ -130,25 +158,28 @@ $(document).ready(function() {
                             </tr>
                         `;
                     });
+                    $('#recepcion-detalles-tbody').html(detallesHtml);
                     
-                    detailsHtml += `
-                            </tbody>
-                        </table>
-                    `;
-                    
-                    $('#recepcion-details').html(detailsHtml);
+                    // Mostrar los detalles de orden de compra
+                    var ordenHtml = '';
+                    data.detalles_ordenes_compras.forEach(function(detalle) {
+                        ordenHtml += `
+                            <tr>
+                                <td>${detalle.suministro}</td>
+                                <td>${detalle.cantidad_pedida}</td>
+                            </tr>
+                        `;
+                    });
+                    $('#orden-detalles-tbody').html(ordenHtml);
                 },
                 error: function() {
                     $('#recepcion-details').html('<p>No se pudo cargar la información de la recepción.</p>');
                 }
             });
         } else {
-            $('#recepcion-details').empty();
+            $('#recepcion-details').find('span, tbody').empty();
         }
     });
 });
 </script>
-
-
-
 @endsection
