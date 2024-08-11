@@ -159,6 +159,4 @@ public function update(Request $request, $id)
 
     return redirect()->route('recepcion.create')->with('success', 'Recepción actualizada exitosamente.');
 }
-
-
 }

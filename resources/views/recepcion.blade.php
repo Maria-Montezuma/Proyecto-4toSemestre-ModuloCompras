@@ -151,48 +151,18 @@
                     <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
                     <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                     <td>
-    <?php
-    $aceptado = false;
-    $rechazado = false;
+                    @php
+            $statusInfo = $recepcion->getStatus();
+        @endphp
+        <span class="badge {{ $statusInfo['badge'] }}">{{ $statusInfo['status'] }}</span>
+        @if ($statusInfo['status'] != 'Sin Estado')
+            <div class="text-muted mt-1">
+                Todos los suministros fueron {{ $statusInfo['status'] }}.
+            </div>
+        @endif
+         
+        </td>
     
-    foreach ($recepcion->detalles_recepciones_mercancias as $detalle) {
-        if ($detalle->status_recepcion == 1) {
-            $aceptado = true;
-        } elseif ($detalle->status_recepcion == 0) {
-            $rechazado = true;
-        }
-
-        // Si ambos estados se han encontrado, podemos salir del bucle
-        if ($aceptado && $rechazado) {
-            break;
-        }
-    }
-
-    // Asignar el estatus basado en la combinación de estados
-    if ($aceptado && $rechazado) {
-        $status = '<span class="badge bg-dark">Parcial</span>';
-        $statusNumero = 2; // Número para "Parcial"
-    } elseif ($aceptado) {
-        $status = '<span class="badge bg-success">Aceptado</span>';
-        $statusNumero = 1; // Número para "Aceptado"
-    } elseif ($rechazado) {
-        $status = '<span class="badge bg-danger">Rechazado</span>';
-        $statusNumero = 0; // Número para "Rechazado"
-    } else {
-        $status = '<span class="badge bg-secondary">Sin Estado</span>';
-        $statusNumero = null; // Para el caso en que no haya detalles
-    }
-    ?>
-
-    {!! $status !!}
-    @if ($aceptado || $rechazado)
-        <div class="text-muted mt-1">
-            Todos los suministros fueron {{ $aceptado ? 'aceptados' : 'rechazados' }}.
-        </div>
-    @endif
-</td>
-
-
                     <td>
                     <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
     Editar <i class="fas fa-edit"></i>
@@ -201,7 +171,7 @@
 
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
                             Ver <i class="fas fa-eye"></i>
-                        </a>
+                        </a></td>
                 </tr>
                 @endforeach
             </tbody>
