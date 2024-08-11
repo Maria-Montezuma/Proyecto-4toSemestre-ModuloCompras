@@ -123,7 +123,7 @@ $(document).ready(function() {
                     data.detalles_recepciones_mercancias.forEach(function(detalle) {
                         detailsHtml += `
                             <tr>
-                                <td>${detalle.suministro.nombre_suministro}</td>
+                                <td>${detalle.suministro}</td>
                                 <td>${detalle.cantidad_recibida}</td>
                                 <td>${detalle.estado}</td>
                             </tr>
@@ -136,6 +136,9 @@ $(document).ready(function() {
                     `;
                     
                     $('#recepcion-details').html(detailsHtml);
+                },
+                error: function() {
+                    $('#recepcion-details').html('<p>No se pudo cargar la información de la recepción.</p>');
                 }
             });
         } else {
@@ -144,4 +147,5 @@ $(document).ready(function() {
     });
 });
 </script>
+
 @endsection

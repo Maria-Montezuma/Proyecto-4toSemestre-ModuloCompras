@@ -20,12 +20,28 @@ class DevolucionController extends Controller
     return view('devolucion', compact('empleados', 'recepciones'));
 }
 
-public function getRecepcionDetails($id)
-    {
-        $recepcion = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias.suministro'])
-            ->findOrFail($id);
+// RecepcionMercanciaController.php
 
-        return response()->json($recepcion);
+public function getRecepcionDetails($id)
+{
+    $recepcion = RecepcionesMercancia::with('detalles_recepciones_mercancias.suministro')->find($id);
+
+    if ($recepcion) {
+        return response()->json([
+            'idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
+            'fecha_recepcion' => $recepcion->fecha_recepcion->format('d/m/Y'),
+            'detalles_recepciones_mercancias' => $recepcion->detalles_recepciones_mercancias->map(function ($detalle) {
+                return [
+                    'suministro' => $detalle->suministro ? $detalle->suministro->nombre_suministro : 'Desconocido',
+                    'cantidad_recibida' => $detalle->cantidad_recibida,
+                    'estado' => $detalle->status_recepcion == 1 ? 'Aceptado' : 'Rechazado'
+                ];
+            })
+        ]);
     }
+
+    return response()->json([], 404);
+}
+
 }
 
