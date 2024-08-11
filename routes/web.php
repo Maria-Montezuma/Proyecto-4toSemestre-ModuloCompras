@@ -60,7 +60,7 @@ Route::get('/get-orden-compra-details/{id}', [RecepcionMercanciaController::clas
 Route::get('/devolucion', function () {
     return view('devolucion');
 })->name('devolucion');
-Route::get('/devolucion', [App\Http\Controllers\DevolucionController::class, 'index'])->name('devolucion');
+Route::get('/devolucion', [DevolucionController::class, 'index'])->name('devolucion');
 
 
 

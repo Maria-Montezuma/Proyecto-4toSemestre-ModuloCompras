@@ -5,11 +5,11 @@
     <h2 class="mb-4 text-center">Solicitar Devolucion</h2>
     <form>
     <div class="row mb-3">
-        <!-- Orden de compra -->
+        <!-- Recepcion de Mercancia -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-            <label for="ordenCompra" class="form-label">N° Orden de Recepcion</label>
+            <label for="recpcion" class="form-label">N° Orden de Recepcion</label>
             <select class="form-control" id="Recepciones_mercancias_idRecepcion_mercancia" name="Recepciones_mercancias_idRecepcion_mercancia" required>
-    <option value="">Seleccione una Recepción de Mercancía</option>
+    <option value="">Seleccione una recepción</option>
     @foreach ($recepciones as $recepcion)
         <option value="{{ $recepcion->idRecepcion_mercancia }}">
             {{ $recepcion->idRecepcion_mercancia }} - {{ $recepcion->fecha_recepcion->format('d/m/Y') }}
@@ -109,4 +109,4 @@
         </tbody>
     </table>
 </div>
-@endsection
+@endsections
