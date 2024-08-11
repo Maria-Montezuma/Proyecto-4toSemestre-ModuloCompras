@@ -22,14 +22,17 @@ class DevolucionController extends Controller
 
 // RecepcionMercanciaController.php
 
+// RecepcionMercanciaController.php
+
 public function getRecepcionDetails($id)
 {
-    $recepcion = RecepcionesMercancia::with('detalles_recepciones_mercancias.suministro')->find($id);
+    $recepcion = RecepcionesMercancia::with('detalles_recepciones_mercancias.suministro', 'empleado')->find($id);
 
     if ($recepcion) {
         return response()->json([
             'idRecepcion_mercancia' => $recepcion->idRecepcion_mercancia,
             'fecha_recepcion' => $recepcion->fecha_recepcion->format('d/m/Y'),
+            'empleado' => $recepcion->empleado ? $recepcion->empleado->nombre_empleado . ' ' . $recepcion->empleado->apellido_empleado : 'Desconocido',
             'detalles_recepciones_mercancias' => $recepcion->detalles_recepciones_mercancias->map(function ($detalle) {
                 return [
                     'suministro' => $detalle->suministro ? $detalle->suministro->nombre_suministro : 'Desconocido',
@@ -40,8 +43,10 @@ public function getRecepcionDetails($id)
         ]);
     }
 
-    return response()->json([], 404);
+    return response()->json(['error' => 'Recepción no encontrada'], 404);
 }
+
+
 
 }
 

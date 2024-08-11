@@ -108,6 +108,7 @@ $(document).ready(function() {
                         <h4>Detalles de Recepción</h4>
                         <p><strong>ID Recepción:</strong> ${data.idRecepcion_mercancia}</p>
                         <p><strong>Fecha Recepción:</strong> ${data.fecha_recepcion}</p>
+                        <p><strong>Empleado:</strong> ${data.empleado}</p>
                         <p><strong>Detalles:</strong></p>
                         <table class="table table-bordered">
                             <thead>
@@ -147,5 +148,7 @@ $(document).ready(function() {
     });
 });
 </script>
+
+
 
 @endsection
