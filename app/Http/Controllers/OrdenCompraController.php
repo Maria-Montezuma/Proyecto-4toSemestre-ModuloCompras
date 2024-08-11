@@ -57,7 +57,7 @@ class OrdenCompraController extends Controller
     ]);
 
     $ordenCompra = new OrdenesCompra();
-    $ordenCompra->fecha_emision = Carbon::now();
+    $ordenCompra->fecha_emision = Carbon::now()->setTimezone('America/Caracas');
     $ordenCompra->fecha_entraga = $validatedData['fecha_entraga'];
     $ordenCompra->status = 1;
     $ordenCompra->Empleados_idEmpleados = $validatedData['Empleados_idEmpleados'];

@@ -84,7 +84,6 @@ class RecepcionesMercancia extends Model
             return [
                 'status' => 'Parcial',
                 'badge' => 'bg-dark',
-                'statusNumero' => 2
             ];
         } elseif ($aceptado) {
             return [

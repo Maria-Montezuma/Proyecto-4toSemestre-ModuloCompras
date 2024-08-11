@@ -13,8 +13,8 @@
 
     <!-- Detalles de la Orden de Compra -->
    <div id="infoOrdenCompra" class="mb-4"></div>
-
-    @if ($errors->any())
+   
+   @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
@@ -22,7 +22,8 @@
             @endforeach
         </ul>
     </div>
-    @endif
+@endif
+
 
     <form action="{{ route('recepcion.store') }}" method="POST">
     @csrf
@@ -85,8 +86,8 @@
         </div>
         <!-- Fecha de Recepcion de Mercancia  -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-            <label for="fecha_recepcion" class="form-label">Fecha de Recepcion</label>
-            <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" required>
+        <label for="fecha_recepcion">Fecha de Emisión</label>
+        <p class="form-control mt-2" id="fecha_recepcion" name="fecha_recepcion">{{ \Carbon\Carbon::now()->format('Y-m-d') }}</p>
         </div>
     </div>
 
@@ -108,7 +109,7 @@
                 </select>
                 </td>
                 <td>
-                    <input type="number" class="form-control" name="cantidad_recibida[]" required min=1>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" required>
                 </td>
                 <td>
                     <select class="form-select" name="status[]" required>
@@ -151,21 +152,26 @@
                     <td>{{ $recepcion->empleado->nombre_empleado }} {{ $recepcion->empleado->apellido_empleado }}</td>
                     <td>{{ $recepcion->fecha_recepcion->format('d-m-Y') }}</td>
                     <td>
-                    @php
-            $statusInfo = $recepcion->getStatus();
-        @endphp
-        <span class="badge {{ $statusInfo['badge'] }}">{{ $statusInfo['status'] }}</span>
-        @if ($statusInfo['status'] != 'Sin Estado')
-            <div class="text-muted mt-1">
-                Todos los suministros fueron {{ $statusInfo['status'] }}.
-            </div>
-        @endif
-        </td>
+                        @php
+                             $statusInfo = $recepcion->getStatus();
+                        @endphp
+                    <span class="badge {{ $statusInfo['badge'] }}">{{ $statusInfo['status'] }}</span>
+                        @if ($statusInfo['status'] == 'Parcial')
+                            <div class="text-muted mt-1">
+                                Suministro Parcial.
+                            </div>
+                        @elseif ($statusInfo['status'] != 'Sin Estado')
+                            <div class="text-muted mt-1">
+                                Suministro {{ $statusInfo['status'] }}.
+                            </div>
+                        @endif
+                    </td>
                     <td>
                     <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
-                        Editar <i class="fas fa-edit"></i>
+    Editar <i class="fas fa-edit"></i>
+</a>
                     </a>
-                    </a>
+
                         <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
                             Ver <i class="fas fa-eye"></i>
                         </a></td>
@@ -274,8 +280,8 @@ $('.view-order').click(function(e) {
                 html += '<td>' + detalle.suministro_recibido + '</td>';
                 html += '<td>' + detalle.cantidad_pedida + '</td>';
                 html += '<td>' + detalle.cantidad_recibida + '</td>';
-                html += '<td>$' + (detalle.precio_unitario !== 'N/A' ? parseFloat(detalle.precio_unitario).toFixed(2) : 'N/A') + '</td>';
-                html += '<td>$' + (detalle.subtotal !== 'N/A' ? parseFloat(detalle.subtotal).toFixed(2) : 'N/A') + '</td>';
+                html += '<td>$' + (detalle.precio_unitario !== 'N/D' ? parseFloat(detalle.precio_unitario).toFixed(2) : 'N/D') + '</td>';
+                html += '<td>$' + (detalle.subtotal !== 'N/D' ? parseFloat(detalle.subtotal).toFixed(2) : 'N/D') + '</td>';
                 html += '<td><span class="status-badge badge ' + (detalle.status_recepcion == 1 ? 'bg-success' : 'bg-danger') + '">' 
                      + (detalle.status_recepcion == 1 ? 'Aceptado' : 'Rechazado') + '</span></td>';
                 html += '</tr>';
