@@ -16,8 +16,11 @@
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <label for="empleado" class="form-label">Empleado</label>
             <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
-                <option value="">Seleccione un empleado</option>
-            </select>
+    <option value="">Seleccione un empleado</option>
+    @foreach ($empleados as $empleado)
+        <option value="{{ $empleado->id }}">{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
+    @endforeach
+</select>
         </div>
         <!-- Fecha de Recepcion de Mercancia  -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\RecepcionMercanciaController;
 use App\Http\Controllers\OrdenCompraController;
+use App\Http\Controllers\DevolucionController;
 use App\Models\Solicitude;
 
 // Ruta principal
@@ -55,10 +56,13 @@ Route::get('/recepcion/{id}', [RecepcionMercanciaController::class, 'show']);
 // ruta para llamar a orden de compra a recepcion
 Route::get('/get-orden-compra-details/{id}', [RecepcionMercanciaController::class, 'getDetails']);
 
-//Rutas de devolucion 
+// Rutas de devolucion 
 Route::get('/devolucion', function () {
     return view('devolucion');
 })->name('devolucion');
+Route::get('/devolucion', [App\Http\Controllers\DevolucionController::class, 'index'])->name('devolucion');
+
+
 
 // Solicitudes
 Route::get('/solicitud', [SolicitudController::class, 'create'])->name('solicitud.create');
