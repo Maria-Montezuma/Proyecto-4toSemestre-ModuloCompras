@@ -83,7 +83,7 @@
     <div>
         <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila </button>
         <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar"> Actualizar <i class="fa-solid fa-box-archive"></i></button>
-        <a href="{{ route('proveedores.create') }}" class="btn btn-secondary mt-2" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
+        <a href="{{ route('recepcion.create') }}" class="btn btn-secondary mt-2" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
         </div> 
 </form>
 
