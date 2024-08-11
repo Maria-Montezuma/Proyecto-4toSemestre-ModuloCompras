@@ -7,7 +7,7 @@
     <div class="row mb-3">
         <!-- Recepcion de Mercancia -->
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-            <label for="recpcion" class="form-label">N° Orden de Recepcion</label>
+            <label for="recepcion" class="form-label">N° Orden de Recepcion</label>
             <select class="form-control" id="Recepciones_mercancias_idRecepcion_mercancia" name="Recepciones_mercancias_idRecepcion_mercancia" required>
     <option value="">Seleccione una recepción</option>
     @foreach ($recepciones as $recepcion)
@@ -109,4 +109,4 @@
         </tbody>
     </table>
 </div>
-@endsections
+@endsection
