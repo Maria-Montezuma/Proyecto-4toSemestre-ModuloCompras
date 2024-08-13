@@ -72,6 +72,40 @@
             </div>
         </div>
 
+        <!-- tabla de comparacion -->
+        <table id="productTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Suministro</th>
+                <th>Cantidad Recibida</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="product-row">
+                <td>
+                <select class="form-control" name="suministro[]" required>
+                    
+                    <option></option>
+                    
+                </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="cantidad_recibida[]" required>
+                </td>
+                <td>
+                    <select class="form-select" name="status[]" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="aceptar" {{ old('estado') == 'aceptar' ? 'selected' : '' }}>Aceptar</option>
+                        <option value="rechazar" {{ old('estado') == 'rechazar' ? 'selected' : '' }}>Rechazar</option>
+                    </select>
+                </td>
+            </tr>   
+        </tbody>
+    </table>
+
+
+
         <!-- Motivo -->
         <div class="row mb-3">
             <div class="col-12">
