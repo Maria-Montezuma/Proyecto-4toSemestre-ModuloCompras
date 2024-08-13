@@ -6,7 +6,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\RecepcionMercanciaController;
 use App\Http\Controllers\OrdenCompraController;
 use App\Http\Controllers\DevolucionController;
-use App\Models\Solicitude;
+use App\Http\Controllers\SuministroController;
 
 // Ruta principal
 Route::get('/', [ProveedoresController::class, 'create'])->name('proveedores');
@@ -67,3 +67,5 @@ Route::get('/recepcion-details/{id}', [DevolucionController::class, 'getRecepcio
 // Solicitudes
 Route::get('/solicitud', [SolicitudController::class, 'create'])->name('solicitud.create');
 Route::post('/solicitud', [SolicitudController::class, 'store'])->name('solicitud.store');
+// modal
+Route::post('/suministro', [SuministroController::class, 'store'])->name('suministro.store');

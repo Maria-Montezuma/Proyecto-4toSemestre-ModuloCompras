@@ -70,6 +70,7 @@
         </div>
     </div>
 </div>
+<!-- botones de acciones formulario -->
 <div class="row mt-3">
 <div class="col-12 text-center">
     <button type="reset" class="btn btn-primary me-2" title="Limpiar">
