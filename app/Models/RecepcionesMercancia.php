@@ -62,48 +62,4 @@ class RecepcionesMercancia extends Model
 	{
 		return $this->hasMany(Devolucione::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
-
-	public function getStatus()
-    {
-        $aceptado = false;
-        $rechazado = false;
-        
-        foreach ($this->detalles_recepciones_mercancias as $detalle) {
-            if ($detalle->status_recepcion == 1) {
-                $aceptado = true;
-            } elseif ($detalle->status_recepcion == 0) {
-                $rechazado = true;
-            }
-
-            if ($aceptado && $rechazado) {
-                break;
-            }
-        }
-
-        if ($aceptado && $rechazado) {
-            return [
-                'status' => 'Parcial',
-                'badge' => 'bg-dark',
-            ];
-        } elseif ($aceptado) {
-            return [
-                'status' => 'Aceptado',
-                'badge' => 'bg-success me-2',
-                'statusNumero' => 1
-            ];
-        } elseif ($rechazado) {
-            return [
-                'status' => 'Rechazado',
-                'badge' => 'bg-danger me-2',
-                'statusNumero' => 0
-            ];
-        } else {
-            return [
-                'status' => 'Sin Estado',
-                'badge' => 'bg-secondary me-2',
-                'statusNumero' => null
-            ];
-        }
-    }
-
 }
