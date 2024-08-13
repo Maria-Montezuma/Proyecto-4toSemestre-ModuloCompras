@@ -71,11 +71,60 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 aqui van los insert
 
-    INSERT INTO `empleados`(`nombre_empleado`, `apellido_empleado`, `cedula`) VALUES ('Daniela','Silva','31531886'),('Juan','Pernia','31532886'),('Maria','Garcia','31532886'), ('Emily','Morgado','31533886'),('Gabriel','Mendoza','31534886');
+    INSERT INTO `empleados`(`nombre_empleado`, `apellido_empleado`, `cedula`) VALUES 
+    ('Daniela','Silva','31531886'),
+    ('Juan','Pernia','31532886'),
+    ('Maria','Garcia','31532886'),
+    ('Emily','Morgado','31533886');
 
-    INSERT INTO `categorias`( `nombre_categoria`) VALUES ('Utensilios'), ('Equipos'), ('Ingredientes y Alimentos'),('Bebidas'),('Otros'); 
+    INSERT INTO `categorias`( `nombre_categoria`) VALUES 
+    ('Utensilios'), 
+    ('Equipos'), 
+    ('Ingredientes y Alimentos'),
+    ('Bebidas'),('Otros'); 
 
-    INSERT INTO `suministros`(`nombre_suministro`, `precio_unitario`, `categorias_idcategorias`) VALUES ('Tenedores',30.00,1),  ('Panes',60.00,3), ('Manteles',15.00,5), ('Licores',80.00,4),  ('Neveras',120.00,2);
+    INSERT INTO `suministros`(`nombre_suministro`, `precio_unitario`, `categorias_idcategorias`) VALUES 
+    ('Cuchillos', 25.00, 1), 
+    ('Sartenes', 150.00, 2), 
+    ('Harina', 50.00, 3),
+    ('Vinos', 200.00, 4), 
+    ('Servilletas', 10.00, 5),
+    ('Platos', 35.00, 1), 
+    ('Hornos', 800.00, 2), 
+    ('Arroz', 45.00, 3), 
+    ('Cerveza', 70.00, 4), 
+    ('Candelabros', 75.00, 5),
+    ('Cucharas', 20.00, 1), 
+    ('Refrigeradores', 1500.00, 2), 
+    ('Aceite de Oliva', 90.00, 3),
+    ('Whisky', 250.00, 4), 
+    ('Velas', 20.00, 5),
+    ('Tazas', 15.00, 1), 
+    ('Microondas', 400.00, 2), 
+    ('Azúcar', 30.00, 3), 
+    ('Ron', 180.00, 4), 
+    ('Flores', 50.00, 5),
+    ('Tenedores de postre', 18.00, 1), 
+    ('Batidoras', 300.00, 2), 
+    ('Tomates', 25.00, 3), 
+    ('Champaña', 220.00, 4), 
+    ('Portavasos', 12.00, 5),
+    ('Cuchillos de carne', 40.00, 1), 
+    ('Licuadoras', 250.00, 2), 
+    ('Lechuga', 15.00, 3), 
+    ('Vodka', 150.00, 4), 
+    ('Manteles de lino', 100.00, 5),
+    ('Cucharas de té', 15.00, 1), 
+    ('Congeladores', 2000.00, 2), 
+    ('Queso', 60.00, 3),
+    ('Tequila', 180.00, 4), 
+    ('Bandejas de plata', 120.00, 5),
+    ('Platos de sopa', 30.00, 1), 
+    ('Parrillas', 600.00, 2), 
+    ('Café', 80.00, 3), 
+    ('Ginebra', 170.00, 4), 
+    ('Jarrones', 70.00, 5);
+
 
     INSERT INTO `proveedores_has_suministro`( `Proveedores_idProveedores`, `Suministro_idSuministro`) VALUES (1,2);
  -->

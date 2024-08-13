@@ -1,11 +1,11 @@
 @extends('layouts.layout')
 
 @section('content')
+
 <div class="container formulario-container mt-5">
-    <h2 class="mb-4 text-center">Registrar de Proveedores</h2>
 
     <!-- Manejo de errores -->
-    @if ($errors->any())
+@if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show">
         <ul>
             @foreach ($errors->all() as $error)
@@ -31,6 +31,7 @@
     </div>
 @endif
 
+<h2 class="mb-4 text-center">Registrar de Proveedores</h2>
 <!-- Formulario para registro de proveedores -->
 <form action="{{ route('proveedores.store') }}" method="POST" class="container-fluid">
 @csrf
