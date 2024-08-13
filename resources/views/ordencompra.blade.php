@@ -3,22 +3,25 @@
 @section('content')
     <!-- error de validacion -->
     <div class="container formulario-container mt-5">
-        @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+        <!-- Manejo de errores -->
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
-        <!-- Mensaje de éxito -->
-        @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-        </div>
-        @endif
+    <!-- Mensaje de éxito -->
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
   
         <h2 class="mb-4 text-center">Orden de Compra</h2>
 <form action="{{ route('ordencompra.store') }}" method="POST">
