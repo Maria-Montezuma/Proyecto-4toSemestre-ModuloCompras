@@ -6,46 +6,45 @@
     <form>
         <div class="row mb-3">
             <!-- Detalles Combinados -->
-            <div id="recepcion-details" class="card mb-4">
-                <div class="card-body">
-                    <p><strong>ID Recepción:</strong> <span id="recepcion-id"></span></p>
-                    <p><strong>Fecha Recepción:</strong> <span id="recepcion-fecha"></span></p>
-                    <p><strong>Empleado:</strong> <span id="recepcion-empleado"></span></p>
-                    <p><strong>Empleado que realizó la Orden:</strong> <span id="recepcion-empleado-orden"></span></p>
-                    <p><strong>Proveedor:</strong> <span id="recepcion-proveedor"></span></p> <!-- Nuevo campo -->
-                    <div id="recepcion-detalles" class="row">
-                        <div class="col-md-6">
-                            <h5>Detalles de Orden de Compra</h5>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Suministro</th>
-                                        <th>Cantidad Pedida</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orden-detalles-tbody">
-                                    <!-- Detalles de orden se insertarán aquí -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Detalles de Recepción</h5>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Suministro</th>
-                                        <th>Cantidad Recibida</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recepcion-detalles-tbody">
-                                    <!-- Detalles de recepción se insertarán aquí -->
-                                </tbody>
-                            </table>
-                        </div>
+            <div id="recepcion-details" class="mb-4">
+                <p><strong>ID Recepción:</strong> <span id="recepcion-id"></span></p>
+                <p><strong>Fecha Recepción:</strong> <span id="recepcion-fecha"></span></p>
+                <p><strong>Empleado:</strong> <span id="recepcion-empleado"></span></p>
+                <p><strong>Empleado que realizó la Orden:</strong> <span id="recepcion-empleado-orden"></span></p>
+                <p><strong>Proveedor:</strong> <span id="recepcion-proveedor"></span></p>
+                <div id="recepcion-detalles" class="row">
+                    <div class="col-md-6">
+                        <h5>Detalles de Orden de Compra</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Pedida</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orden-detalles-tbody">
+                                <!-- Detalles de orden se insertarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Detalles de Recepción</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Recibida</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recepcion-detalles-tbody">
+                                <!-- Detalles de recepción se insertarán aquí -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+
             <!-- Recepción de Mercancía -->
             <div class="col-12 col-lg-4 mb-3 mb-lg-0">
                 <label for="recepcion" class="form-label">N° Orden de Recepción</label>
