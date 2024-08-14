@@ -47,7 +47,6 @@ Route::get('/recepcion', function () {
 Route::get('/recepcion', [RecepcionMercanciaController::class, 'create'])->name('recepcion');
 Route::get('/recepcion/create', [RecepcionMercanciaController::class, 'create'])->name('recepcion.create');
 Route::post('/recepcion/store', [RecepcionMercanciaController::class, 'store'])->name('recepcion.store');
-Route::post('/recepcion/store', [RecepcionMercanciaController::class, 'store'])->name('recepcion.store');
 // editar
 Route::get('/recepcion/{id}/edit', [RecepcionMercanciaController::class, 'edit'])->name('recepcion.edit');
 Route::put('/recepcion/{id}', [RecepcionMercanciaController::class, 'update'])->name('recepcion.update');
@@ -61,7 +60,7 @@ Route::get('/devolucion', function () {
     return view('devolucion');
 })->name('devolucion');
 Route::get('/devolucion', [DevolucionController::class, 'index'])->name('devolucion');
-Route::post('/devolucion', [DevolucionController::class, 'store'])->name('devolucion.store');
+Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
 Route::get('/recepcion-details/{id}', [DevolucionController::class, 'getRecepcionDetails']);
 
 // Solicitudes

@@ -52,4 +52,30 @@ class DetallesDevolucione extends Model
 	{
 		return $this->belongsTo(Suministro::class, 'Suministros_idSuministro');
 	}
+
+
+public function getStatusDevolucionAttribute()
+{
+    $statusMap = [
+        1 => 'Sobrante',
+        2 => 'Faltante',
+        3 => 'Dañado',
+        4 => 'Otro'
+    ];
+
+    return $statusMap[$this->attributes['status_devolucion']] ?? 'Desconocido';
+}
+
+public function setStatusDevolucionAttribute($value)
+{
+    $statusMap = [
+        'Sobrante' => 1,
+        'Faltante' => 2,
+        'Dañado' => 3,
+        'Otro' => 4
+    ];
+
+    $this->attributes['status_devolucion'] = $statusMap[$value] ?? 0;
+}
+
 }
