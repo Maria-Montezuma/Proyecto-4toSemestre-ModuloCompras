@@ -62,8 +62,6 @@ class RecepcionesMercancia extends Model
 	{
 		return $this->hasMany(Devolucione::class, 'Recepciones_mercancias_idRecepcion_mercancia');
 	}
-
-	
 	public function getStatus()
     {
         $aceptado = false;

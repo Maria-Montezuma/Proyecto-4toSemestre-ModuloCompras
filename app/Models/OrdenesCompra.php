@@ -77,7 +77,6 @@ class OrdenesCompra extends Model
 	{
 		return $this->hasMany(RecepcionesMercancia::class, 'Ordenes_compras_idOrden_compra');
 	}
-
 	public function getEnviadoAtAttribute($value)
     {
         return $value ? Carbon::parse($value) : null;
@@ -88,12 +87,12 @@ class OrdenesCompra extends Model
         if (!$this->enviado_at) {
             return $this->status == 1;
         }
-        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(15)->isFuture();
+        return $this->status == 1 && Carbon::parse($this->enviado_at)->addMinutes(1)->isFuture();
     }
 
 	public function actualizarEstadoSiNecesario()
     {
-        if ($this->status == 1 && $this->enviado_at && Carbon::parse($this->enviado_at)->addMinutes(2)->isPast()) {
+        if ($this->status == 1 && $this->enviado_at && Carbon::parse($this->enviado_at)->addMinutes(1)->isPast()) {
             $this->status = 2; // Asumiendo que 2 es el estado "recibido"
             $this->save();
         }

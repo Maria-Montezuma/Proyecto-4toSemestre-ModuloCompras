@@ -13,18 +13,20 @@ use App\Models\Suministro;
 class DevolucionController extends Controller
 {
     public function index()
-    {
-        $empleados = Empleado::all();
-        $recepciones = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias'])
-            ->whereHas('detalles_recepciones_mercancias', function($query) {
-                $query->where('status_recepcion', 0);
-            })->get();
-        $suministros = Suministro::all(); // Agregar esta línea para obtener todos los suministros
-        $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])
-            ->get();
+{
+    $empleados = Empleado::all();
+    $recepciones = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias'])
+        ->whereHas('detalles_recepciones_mercancias', function($query) {
+            $query->where('status_recepcion', 0);
+        })->get();
+    $suministros = Suministro::all(); 
+    $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])->get();
     
-        return view('devolucion', compact('empleados', 'recepciones', 'devoluciones', 'suministros')); // Asegúrate de pasar suministros
-    }
+    // Verifica los datos
+    // dd($empleados, $recepciones, $devoluciones, $suministros);
+
+    return view('devolucion', compact('empleados', 'recepciones', 'devoluciones', 'suministros'));
+}
 
 public function store(Request $request)
 {
@@ -42,7 +44,7 @@ public function store(Request $request)
     // Crear la devolución
     $devolucion = Devolucione::create([
         'fecha_devolucion' => $request->fecha_devolucion,
-        'Emplados_idEmplados' => $request->empleado_id,
+        'Empleados_idEmpleados' => $request->empleado_id,
         'Recepciones_mercancias_idRecepcion_mercancia' => $request->recepcion_id,
     ]);
 

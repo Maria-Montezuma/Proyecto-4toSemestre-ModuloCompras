@@ -38,7 +38,7 @@ class Empleado extends Model
 
 	public function devoluciones()
 	{
-		return $this->hasMany(Devolucione::class, 'Emplados_idEmplados');
+		return $this->hasMany(Devolucione::class, 'Empleados_idEmpleados');
 	}
 
 	public function ordenes_compras()

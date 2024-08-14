@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $idDevoluciones
  * @property Carbon $fecha_devolucion
- * @property int $Emplados_idEmplados
  * @property int $Recepciones_mercancias_idRecepcion_mercancia
+ * @property int $Empleados_idEmpleados
  * 
  * @property Empleado $empleado
  * @property RecepcionesMercancia $recepciones_mercancia
@@ -32,19 +32,19 @@ class Devolucione extends Model
 
 	protected $casts = [
 		'fecha_devolucion' => 'datetime',
-		'Emplados_idEmplados' => 'int',
-		'Recepciones_mercancias_idRecepcion_mercancia' => 'int'
+		'Recepciones_mercancias_idRecepcion_mercancia' => 'int',
+		'Empleados_idEmpleados' => 'int'
 	];
 
 	protected $fillable = [
 		'fecha_devolucion',
-		'Emplados_idEmplados',
-		'Recepciones_mercancias_idRecepcion_mercancia'
+		'Recepciones_mercancias_idRecepcion_mercancia',
+		'Empleados_idEmpleados'
 	];
 
 	public function empleado()
 	{
-		return $this->belongsTo(Empleado::class, 'Emplados_idEmplados');
+		return $this->belongsTo(Empleado::class, 'Empleados_idEmpleados');
 	}
 
 	public function recepciones_mercancia()
@@ -56,97 +56,4 @@ class Devolucione extends Model
 	{
 		return $this->hasMany(DetallesDevolucione::class, 'Devoluciones_idDevoluciones');
 	}
-	public function getDevolucionStatus()
-{
-    $sobrante = false;
-    $faltante = false;
-    $dañado = false;
-    $otro = false;
-
-    foreach ($this->detalles_devoluciones as $detalle) {
-        switch ($detalle->estado_devolucion) {
-            case 1:
-                $sobrante = true;
-                break;
-            case 2:
-                $faltante = true;
-                break;
-            case 3:
-                $dañado = true;
-                break;
-            case 0:
-                $otro = true;
-                break;
-        }
-
-        // Si se encuentran todos los estados, podemos salir del bucle
-        if ($sobrante && $faltante && $dañado && $otro) {
-            break;
-        }
-    }
-
-    // Determinar el estado basado en las condiciones encontradas
-    if ($sobrante && $faltante && $dañado && $otro) {
-        return [
-            'status' => 'Sob. + Falt. + Dañ. + Otro',
-            'badge' => 'bg-dark',
-            'statusNumero' => 5
-        ];
-    } elseif ($sobrante && $faltante && $dañado) {
-        return [
-            'status' => 'Sob. + Falt. + Dañ.',
-            'badge' => 'bg-dark',
-            'statusNumero' => 6
-        ];
-    } elseif ($sobrante && $faltante) {
-        return [
-            'status' => 'Sob. + Falt.',
-            'badge' => 'bg-warning',
-            'statusNumero' => 7
-        ];
-    } elseif ($sobrante && $dañado ) {
-        return [
-            'status' => 'Sob. + Dañ.',
-            'badge' => 'bg-warning',
-            'statusNumero' => 8
-        ];
-    } elseif ($faltante && $dañado ) {
-        return [
-            'status' => 'Falt. + Dañ.',
-            'badge' => 'bg-warning',
-            'statusNumero' => 9
-        ];
-    } elseif ($otro) {
-        return [
-            'status' => 'Otro',
-            'badge' => 'bg-info me-2',
-            'statusNumero' => 0
-        ];
-    } elseif ($sobrante) {
-        return [
-            'status' => 'Sobrante',
-            'badge' => 'bg-success me-2',
-            'statusNumero' => 1
-        ];
-    } elseif ($faltante) {
-        return [
-            'status' => 'Faltante',
-            'badge' => 'bg-danger me-2',
-            'statusNumero' => 2
-        ];
-    } elseif ($dañado ) {
-        return [
-            'status' => 'Dañado',
-            'badge' => 'bg-danger me-2',
-            'statusNumero' => 3
-        ];
-    } else {
-        return [
-            'status' => 'Sin Estado',
-            'badge' => 'bg-secondary me-2',
-            'statusNumero' => null
-        ];
-    }
-}
-
 }
