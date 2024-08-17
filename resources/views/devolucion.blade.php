@@ -135,8 +135,6 @@
         </tr>
     </tbody>
 </table>
-
-
         <!-- Motivo -->
          <div class="row mb-3">
             <div class="col-12">
@@ -150,11 +148,11 @@
         </div>
     </form>
 </div>
-</div>
 
+<div class="container mt-5">
         <h2>Lista de Devoluciones</h2>
-
-        <table class="table">
+        <div class="table-responsive">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Fecha de Devolución</th>
@@ -171,47 +169,33 @@
                     <tr>
                         <td>{{ $devolucion->fecha_devolucion->format('d-m-Y') }}</td>
                         <td>{{ $devolucion->recepciones_mercancia->idRecepcion_mercancia }}</td>
-                        <td>{{ $devolucion->empleado->nombre }} {{ $devolucion->empleado->apellido }}</td>
+                        <td>{{ $devolucion->empleado->nombre_empleado}}
+                            {{ $devolucion->empleado->apellido_empleado}}</td>
                         <td>
-                            <ul>
-                                @foreach($devolucion->detalles_devoluciones as $detalle)
-                                    <li>
-                                        Suministro: {{ $detalle->suministro->nombre_suministro }}, 
-                                    </li>
-                                @endforeach
-                            </ul>
+                             @foreach($devolucion->detalles_devoluciones as $detalle)  
+                                 {{ $detalle->suministro->nombre_suministro }}  
+                             @endforeach
                         </td>
                         <td>
-                            <ul>
-                                @foreach($devolucion->detalles_devoluciones as $detalle)
-                                    <li>
-                                        Cantidad Devuelta: {{ $detalle->cantidad_devuelta }}, 
-                                    </li>
-                                @endforeach
-                            </ul>
+                             @foreach($devolucion->detalles_devoluciones as $detalle)
+                                {{ $detalle->cantidad_devuelta }} 
+                            @endforeach
                         </td>
                         <td>
-                            <ul>
-                                @foreach($devolucion->detalles_devoluciones as $detalle)
-                                    <li>
-                                        Motivo: {{ $detalle->motivo }}, 
-                                    </li>
-                                @endforeach
-                            </ul>
+                             @foreach($devolucion->detalles_devoluciones as $detalle)
+                                {{ $detalle->motivo }} 
+                            @endforeach
                         </td>
                         <td>
-                            <ul>
-                                @foreach($devolucion->detalles_devoluciones as $detalle)
-                                    <li>
-                                        Estado: {{ $detalle->status_devolucion }}
-                                    </li>
-                                @endforeach
-                            </ul>
+                            @foreach($devolucion->detalles_devoluciones as $detalle)
+                                 {{ $detalle->status_devolucion }}
+                             @endforeach
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
     </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
