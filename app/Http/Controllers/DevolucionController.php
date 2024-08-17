@@ -27,10 +27,9 @@ class DevolucionController extends Controller
 
     public function store(Request $request)
 {
-    
     $validatedData = $request->validate([
         'Recepciones_mercancias_idRecepcion_mercancia' => 'required|exists:recepciones_mercancias,idRecepcion_mercancia',
-        'Empleados_idEmpleados' => 'required|exists:empleados,id',
+        'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
         'fecha_devolucion' => 'required|date',
         'Suministros_idSuministro' => 'required|array',
         'Suministros_idSuministro.*' => 'exists:suministros,idSuministro',

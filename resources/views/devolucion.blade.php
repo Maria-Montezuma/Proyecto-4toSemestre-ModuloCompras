@@ -2,6 +2,26 @@
 
 @section('content')
 <div class="container formulario-container mt-5">
+        <!-- Manejo de errores -->
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <!-- Mensaje de éxito -->
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <h2 class="mb-4 text-center">Solicitar Devolución</h2>
     
     <!-- Detalles Combinados (Ocultos por defecto) -->
@@ -64,12 +84,15 @@
             <!-- Empleado -->
             <div class="col-lg-4 mb-3 mb-lg-0">
                 <label for="Empleados_idEmpleados" class="form-label">Empleado</label>
-                <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
-    <option value="">Seleccione un empleado</option>
-    @foreach ($empleados as $empleado)
-        <option value="{{ $empleado->id }}">{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
-    @endforeach
-</select>
+                <select name="Empleados_idEmpleados" class="form-control" required>
+                    <option value="">Seleccione un empleado</option>
+                    @foreach($empleados as $empleado)
+                        <option value="{{ $empleado->idEmpleados }}">
+                            {{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}
+                        </option>
+                    @endforeach
+                </select>
+
             </div>
             <!-- Fecha de Devolución -->
             <div class="col-lg-4 mb-3 mb-lg-0">
@@ -127,13 +150,7 @@
         </div>
     </form>
 </div>
-
-<div class="container">
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+</div>
 
         <h2>Lista de Devoluciones</h2>
 
@@ -276,9 +293,6 @@ $(document).ready(function() {
                         <option value="Dañado">Dañado</option>
                         <option value="Otro">Otro</option>
                     </select>
-                </td>
-                <td>
-                    <textarea class="form-control" name="motivo[]" rows="3"></textarea>
                 </td>
             </tr>
         `;
