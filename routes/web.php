@@ -56,9 +56,6 @@ Route::get('/recepcion/{id}', [RecepcionMercanciaController::class, 'show']);
 Route::get('/get-orden-compra-details/{id}', [RecepcionMercanciaController::class, 'getDetails']);
 
 // Rutas de devolucion 
-Route::get('/devolucion', function () {
-    return view('devolucion');
-})->name('devolucion');
 Route::get('/devolucion', [DevolucionController::class, 'index'])->name('devolucion');
 Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
 Route::get('/recepcion-details/{id}', [DevolucionController::class, 'getRecepcionDetails']);

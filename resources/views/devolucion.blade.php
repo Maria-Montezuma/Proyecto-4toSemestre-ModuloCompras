@@ -63,18 +63,18 @@
             </div>
             <!-- Empleado -->
             <div class="col-lg-4 mb-3 mb-lg-0">
-                <label for="empleado" class="form-label">Empleado</label>
+                <label for="Empleados_idEmpleados" class="form-label">Empleado</label>
                 <select class="form-control" id="Empleados_idEmpleados" name="Empleados_idEmpleados" required>
-                    <option value="">Seleccione un empleado</option>
-                    @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->id }}">{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
-                    @endforeach
-                </select>
+    <option value="">Seleccione un empleado</option>
+    @foreach ($empleados as $empleado)
+        <option value="{{ $empleado->id }}">{{ $empleado->nombre_empleado }} {{ $empleado->apellido_empleado }}</option>
+    @endforeach
+</select>
             </div>
             <!-- Fecha de Devolución -->
             <div class="col-lg-4 mb-3 mb-lg-0">
                 <label for="fecha_devolucion" class="form-label">Fecha de Devolución</label>
-                <input type="date" class="form-control" id="fecha_devolucion" name="fecha_recepcion" required>
+                <input type="date" class="form-control" id="fecha_devolucion" name="fecha_devolucion" required>
             </div>
         </div>
 
@@ -118,7 +118,7 @@
          <div class="row mb-3">
             <div class="col-12">
                 <label for="motivo" class="form-label">Motivo</label>
-                <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+                <textarea class="form-control" id="motivo" name="motivo[]" rows="3"></textarea>
             </div>
         </div>
         <div>
@@ -253,6 +253,38 @@ $(document).ready(function() {
     });
 });
 
+$(document).ready(function() {
+    $('#addRow').click(function() {
+        var newRow = `
+            <tr class="product-row">
+                <td>
+                    <select class="form-control" name="Suministros_idSuministro[]" required>
+                        <option value="">Selecciona un suministro</option>
+                        @foreach($suministros as $suministro)
+                            <option value="{{ $suministro->idSuministro }}">{{ $suministro->nombre_suministro }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="cantidad_devuelta[]" required>
+                </td>
+                <td>
+                    <select class="form-control" name="status_devolucion[]" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="Sobrante">Sobrante</option>
+                        <option value="Faltante">Faltante</option>
+                        <option value="Dañado">Dañado</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </td>
+                <td>
+                    <textarea class="form-control" name="motivo[]" rows="3"></textarea>
+                </td>
+            </tr>
+        `;
+        $('#productTable tbody').append(newRow);
+    });
+});
 
 </script>
 @endsection

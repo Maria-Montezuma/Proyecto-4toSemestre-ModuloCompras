@@ -8,6 +8,7 @@ use App\Models\RecepcionesMercancia;
 use App\Models\Devolucione;
 use App\Models\DetallesDevolucione;
 use App\Models\Suministro;
+use Illuminate\Support\Facades\DB;
 
 class DevolucionController extends Controller
 {
@@ -25,42 +26,51 @@ class DevolucionController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'Recepciones_mercancias_idRecepcion_mercancia' => 'required|exists:recepciones_mercancias,idRecepcion_mercancia',
-            'Empleados_idEmpleados' => 'required|exists:empleados,id',
-            'fecha_recepcion' => 'required|date',
-            'motivo' => 'nullable|string',
-            'Suministros_idSuministro.*' => 'required|exists:suministros,idSuministro',
-            'cantidad_devuelta.*' => 'required|numeric|min:0',
-            'status_devolucion.*' => 'required|string|in:Sobrante,Faltante,Dañado,Otro',
-        ]);
+{
     
-        try {
-            // Crear la devolución
-            $devolucion = new Devolucione();
-            $devolucion->Recepciones_mercancias_idRecepcion_mercancia = $request->Recepciones_mercancias_idRecepcion_mercancia;
-            $devolucion->Empleados_idEmpleados = $request->Empleados_idEmpleados;
-            $devolucion->fecha_devolucion = $request->fecha_recepcion;
-            $devolucion->motivo = $request->motivo;
-            $devolucion->save();
-    
-            // Guardar los detalles de la devolución
-            foreach ($request->suministro as $index => $suministroId) {
-                $detalle = new DetallesDevolucione();
-                $detalle->Devoluciones_idDevolucion = $devolucion->idDevolucion; // Verifica el nombre de la columna
-                $detalle->Suministros_idSuministro = $suministroId;
-                $detalle->cantidad_devuelta = $request->cantidad_devuelta[$index];
-                $detalle->status_devolucion = $request->status_devolucion[$index];
-                $detalle->save();
-            }
-    
-            return redirect()->back()->with('success', 'Devolución guardada correctamente.');
-        } catch (\Exception $e) {
-            dd($e->getMessage()); // Para depuración de errores
-            return redirect()->back()->withErrors(['error' => 'Hubo un problema al guardar la devolución.']);
+    $validatedData = $request->validate([
+        'Recepciones_mercancias_idRecepcion_mercancia' => 'required|exists:recepciones_mercancias,idRecepcion_mercancia',
+        'Empleados_idEmpleados' => 'required|exists:empleados,id',
+        'fecha_devolucion' => 'required|date',
+        'Suministros_idSuministro' => 'required|array',
+        'Suministros_idSuministro.*' => 'exists:suministros,idSuministro',
+        'cantidad_devuelta' => 'required|array',
+        'cantidad_devuelta.*' => 'numeric|min:0',
+        'status_devolucion' => 'required|array',
+        'status_devolucion.*' => 'in:Sobrante,Faltante,Dañado,Otro',
+        'motivo' => 'required|array',
+        'motivo.*' => 'string',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        // Crear la devolución
+        $devolucion = new Devolucione();
+        $devolucion->Recepciones_mercancias_idRecepcion_mercancia = $request->Recepciones_mercancias_idRecepcion_mercancia;
+        $devolucion->Empleados_idEmpleados = $request->Empleados_idEmpleados;
+        $devolucion->fecha_devolucion = $request->fecha_devolucion;
+        $devolucion->save();
+
+        // Guardar los detalles de la devolución
+        foreach ($request->Suministros_idSuministro as $index => $suministroId) {
+            $detalle = new DetallesDevolucione();
+            $detalle->Devoluciones_idDevoluciones = $devolucion->idDevoluciones;
+            $detalle->Suministros_idSuministro = $suministroId;
+            $detalle->cantidad_devuelta = $request->cantidad_devuelta[$index];
+            $detalle->status_devolucion = $request->status_devolucion[$index];
+            $detalle->motivo = $request->motivo[$index];
+            $detalle->save();
         }
+
+        DB::commit();
+
+        return redirect()->back()->with('success', 'Devolución guardada correctamente.');
+    } catch (\Exception $e) {
+        DB::rollback();
+        return redirect()->back()->withErrors(['error' => 'Hubo un problema al guardar la devolución: ' . $e->getMessage()]);
     }
+}
     
 
     public function getRecepcionDetails($id)
