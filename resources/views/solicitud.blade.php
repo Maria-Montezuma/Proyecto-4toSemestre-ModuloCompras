@@ -159,14 +159,11 @@
                         <input type="number" step="0.01" class="form-control" id="precio_unitario" name="precio_unitario" required>
                     </div>
                     <div class="mb-3">
-                        <label for="categoria" class="form-label">Categoría</label>
-                        <select class="form-select" id="categoria" name="categorias_idcategorias" required>
-                            <option value="">Seleccione una categoría</option>
-                            @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->idcategorias }}">{{ $categoria->nombre_categoria }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <label for="categoria" class="form-label">Categoría</label>
+    <select class="form-select" id="categoria" name="categorias_idcategorias" required>
+        <option value="">Seleccione una categoría</option>
+    </select>
+</div>
                 </div>
                 <div class="modal-footer" style="background-color: #DEB887;">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -177,20 +174,41 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var registrarSuministroModal = document.getElementById('registrarSuministroModal');
-        registrarSuministroModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var solicitudId = button.getAttribute('data-solicitud-id');
-            var proveedorId = button.getAttribute('data-proveedor-id');
-            var modalSolicitudId = registrarSuministroModal.querySelector('#solicitudId');
-            var modalProveedorId = registrarSuministroModal.querySelector('#proveedorId');
-            modalSolicitudId.value = solicitudId;
-            modalProveedorId.value = proveedorId;
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const proveedorSelect = document.getElementById('proveedor');
+    const categoriaSelect = document.getElementById('categoria');
+
+    proveedorSelect.addEventListener('change', function() {
+        const proveedorId = this.value;
+
+        if (proveedorId) {
+            fetch(`/proveedor/${proveedorId}/categorias`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    categoriaSelect.innerHTML = '<option value="">Seleccione una categoría</option>';
+                    if (Array.isArray(data)) {
+                        data.forEach(categoria => {
+                            const option = document.createElement('option');
+                            option.value = categoria.idcategorias;
+                            option.textContent = categoria.nombre_categoria;
+                            categoriaSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('Unexpected response format:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        } else {
+            categoriaSelect.innerHTML = '<option value="">Seleccione una categoría</option>';
+        }
     });
+});
 </script>
-@endpush

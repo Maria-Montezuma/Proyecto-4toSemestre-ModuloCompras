@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Suministro;
 use App\Models\ProveedoresHasSuministro;
+use App\Models\Proveedore;
 
 class SuministroController extends Controller
 {
+    public function getCategoriasPorProveedor($proveedor_id)
+{
+    $proveedor = Proveedore::find($proveedor_id);
+
+    if (!$proveedor) {
+        return response()->json(['error' => 'Proveedor no encontrado.'], 404);
+    }
+
+    $categorias = $proveedor->categorias;  // Obtiene las categorías asociadas al proveedor
+
+    return response()->json($categorias);
+}
+
     public function store(Request $request)
     {
         $request->validate([
