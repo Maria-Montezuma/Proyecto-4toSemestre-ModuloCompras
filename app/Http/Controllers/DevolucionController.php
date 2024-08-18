@@ -13,21 +13,24 @@ use Illuminate\Support\Facades\DB;
 class DevolucionController extends Controller
 {
     public function index()
-    {
-        $empleados = Empleado::all();
-        $recepciones = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias'])
-            ->whereHas('detalles_recepciones_mercancias', function($query) {
-                $query->where('status_recepcion', 0);
-            })->get();
-        $suministros = Suministro::all(); 
-        $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])->get();
+{
+    $empleados = Empleado::all();
+    $recepciones = RecepcionesMercancia::with(['ordenes_compra.proveedore', 'detalles_recepciones_mercancias'])
+        ->whereHas('detalles_recepciones_mercancias', function($query) {
+            $query->where('status_recepcion', 0);
+        })
+        ->whereDoesntHave('devoluciones') // Excluir recepciones que ya tienen devoluciones
+        ->get();
+    $suministros = Suministro::all(); 
+    $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])->get();
 
-        return view('devolucion', compact('empleados', 'recepciones', 'devoluciones', 'suministros'));
-    }
+    return view('devolucion', compact('empleados', 'recepciones', 'devoluciones', 'suministros'));
+}
 
     public function store(Request $request)
 {
     $validatedData = $request->validate([
+        'Recepciones_mercancias_idRecepcion_mercancia' => 'required|exists:recepciones_mercancias,idRecepcion_mercancia',
         'Recepciones_mercancias_idRecepcion_mercancia' => 'required|exists:recepciones_mercancias,idRecepcion_mercancia',
         'Empleados_idEmpleados' => 'required|exists:empleados,idEmpleados',
         'fecha_devolucion' => 'required|date',
@@ -40,6 +43,12 @@ class DevolucionController extends Controller
         'motivo' => 'required|array',
         'motivo.*' => 'string',
     ]);
+
+    $existingDevolucion = Devolucione::where('Recepciones_mercancias_idRecepcion_mercancia', $request->Recepciones_mercancias_idRecepcion_mercancia)->first();
+
+    if ($existingDevolucion) {
+        return redirect()->back()->withErrors(['error' => 'Ya existe una devolución para esta recepción.']);
+    }
 
     try {
         DB::beginTransaction();
