@@ -143,8 +143,9 @@
             </div>
         </div>
         <div>
+        <button type="reset" class="btn btn-primary mt-2" title="Limpiar">Limpiar <i class="fa-solid fa-broom"></i></button>
             <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila</button>
-            <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar">Actualizar <i class="fa-solid fa-box-archive"></i></button>
+            <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar">Guardar <i class="fa-solid fa-box-archive"></i></button>
         </div>
     </form>
 </div>
