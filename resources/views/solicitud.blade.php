@@ -151,6 +151,12 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <select class="form-select" id="categoria" name="categorias_idcategorias" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="nombre_suministro" class="form-label">Nombre del Suministro</label>
                         <input type="text" class="form-control" id="nombre_suministro" name="nombre_suministro" required>
                     </div>
@@ -158,12 +164,7 @@
                         <label for="precio_unitario" class="form-label">Precio Unitario</label>
                         <input type="number" step="0.01" class="form-control" id="precio_unitario" name="precio_unitario" required>
                     </div>
-                    <div class="mb-3">
-    <label for="categoria" class="form-label">Categoría</label>
-    <select class="form-select" id="categoria" name="categorias_idcategorias" required>
-        <option value="">Seleccione una categoría</option>
-    </select>
-</div>
+                    
                 </div>
                 <div class="modal-footer" style="background-color: #DEB887;">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
