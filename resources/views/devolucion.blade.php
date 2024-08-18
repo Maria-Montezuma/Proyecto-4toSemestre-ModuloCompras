@@ -159,9 +159,8 @@
                     <th>Empleado</th>
                     <th>Suministro</th>
                     <th>Cantidad Devuelta</th>
-                    <th>Motivo</th>
                     <th>Estado</th>
-                    <th>Acción</th> <!-- Nueva columna para el botón de cancelar -->
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -178,11 +177,6 @@
                         <td>
                             @foreach($devolucion->detalles_devoluciones as $detalle)
                                 {{ $detalle->cantidad_devuelta }}
-                            @endforeach
-                        </td>
-                        <td>
-                            @foreach($devolucion->detalles_devoluciones as $detalle)
-                                {{ $detalle->motivo }}
                             @endforeach
                         </td>
                         <td>
