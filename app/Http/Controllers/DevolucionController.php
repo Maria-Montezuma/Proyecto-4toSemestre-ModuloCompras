@@ -106,4 +106,32 @@ class DevolucionController extends Controller
 
         return response()->json(['error' => 'Recepción no encontrada'], 404);
     }
+
+    public function cancel($id)
+{
+    $devolucion = Devolucione::findOrFail($id);
+    $now = \Carbon\Carbon::now();
+    $created_at = \Carbon\Carbon::parse($devolucion->created_at);
+    $minutes_passed = $now->diffInMinutes($created_at);
+
+    if ($minutes_passed <= 3) {
+        try {
+            DB::beginTransaction();
+
+            // Actualizar el estado de la devolución
+            $devolucion->status_devolucion = 'Cancelada';
+            $devolucion->save();
+
+            // Aquí podrías agregar lógica adicional si es necesario
+
+            DB::commit();
+            return redirect()->route('devolucion')->with('success', 'Devolución cancelada correctamente.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('devolucion')->withErrors(['error' => 'Hubo un problema al cancelar la devolución: ' . $e->getMessage()]);
+        }
+    } else {
+        return redirect()->route('devolucion')->with('error', 'No se puede cancelar esta devolución porque ha pasado más de 3 minutos.');
+    }
+}
 }

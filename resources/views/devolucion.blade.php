@@ -148,10 +148,9 @@
         </div>
     </form>
 </div>
-
 <div class="container mt-5">
-        <h2>Lista de Devoluciones</h2>
-        <div class="table-responsive">
+    <h2>Lista de Devoluciones</h2>
+    <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -162,6 +161,7 @@
                     <th>Cantidad Devuelta</th>
                     <th>Motivo</th>
                     <th>Estado</th>
+                    <th>Acción</th> <!-- Nueva columna para el botón de cancelar -->
                 </tr>
             </thead>
             <tbody>
@@ -169,34 +169,50 @@
                     <tr>
                         <td>{{ $devolucion->fecha_devolucion->format('d-m-Y') }}</td>
                         <td>{{ $devolucion->recepciones_mercancia->idRecepcion_mercancia }}</td>
-                        <td>{{ $devolucion->empleado->nombre_empleado}}
-                            {{ $devolucion->empleado->apellido_empleado}}</td>
+                        <td>{{ $devolucion->empleado->nombre_empleado }} {{ $devolucion->empleado->apellido_empleado }}</td>
                         <td>
-                             @foreach($devolucion->detalles_devoluciones as $detalle)  
-                                 {{ $detalle->suministro->nombre_suministro }}  
-                             @endforeach
-                        </td>
-                        <td>
-                             @foreach($devolucion->detalles_devoluciones as $detalle)
-                                {{ $detalle->cantidad_devuelta }} 
-                            @endforeach
-                        </td>
-                        <td>
-                             @foreach($devolucion->detalles_devoluciones as $detalle)
-                                {{ $detalle->motivo }} 
+                            @foreach($devolucion->detalles_devoluciones as $detalle)
+                                {{ $detalle->suministro->nombre_suministro }}
                             @endforeach
                         </td>
                         <td>
                             @foreach($devolucion->detalles_devoluciones as $detalle)
-                                 {{ $detalle->status_devolucion }}
-                             @endforeach
+                                {{ $detalle->cantidad_devuelta }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($devolucion->detalles_devoluciones as $detalle)
+                                {{ $detalle->motivo }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($devolucion->detalles_devoluciones as $detalle)
+                                {{ $detalle->status_devolucion }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @php
+                                $now = \Carbon\Carbon::now();
+                                $created_at = \Carbon\Carbon::parse($devolucion->created_at);
+                                $minutes_passed = $now->diffInMinutes($created_at);
+                            @endphp
+                            @if($minutes_passed <= 3)
+                                <form action="{{ route('devolucion.cancel', $devolucion->idDevoluciones) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                                </form>
+                            @else
+                                <span class="text-muted">No disponible</span>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
