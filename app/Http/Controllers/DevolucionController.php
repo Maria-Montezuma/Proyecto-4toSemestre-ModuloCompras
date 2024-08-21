@@ -22,7 +22,7 @@ class DevolucionController extends Controller
         ->whereDoesntHave('devoluciones') // Excluir recepciones que ya tienen devoluciones
         ->get();
     $suministros = Suministro::all(); 
-    $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])->get();
+    $devoluciones = Devolucione::with(['detalles_devoluciones.suministro', 'empleado', 'recepciones_mercancia'])->orderBy('idDevoluciones', 'desc')->get();
 
     return view('devolucion', compact('empleados', 'recepciones', 'devoluciones', 'suministros'));
 }
@@ -80,7 +80,6 @@ class DevolucionController extends Controller
     }
 }
     
-
     public function getRecepcionDetails($id)
     {
         $recepcion = RecepcionesMercancia::with([

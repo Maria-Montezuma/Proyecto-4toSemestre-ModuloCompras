@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Proveedore;
 use App\Models\Categoria;
-use App\Models\ProveedoresHasCategoria;
 use Illuminate\Http\Request;
 
 
@@ -129,19 +128,16 @@ class ProveedoresController extends Controller
 
         if ($proveedor) {
             // Eliminar registros relacionados en la tabla puente
-            $proveedor->categorias()->detach(); // Esto elimina todas las relaciones en la tabla puente
-    
+            $proveedor->categorias()->detach(); 
             // Eliminar el proveedor
             $proveedor->delete();
-    
             return back()->with('success', 'Proveedor eliminado con éxito');
         } else {
             return back()->with('error', 'Proveedor no encontrado');
         }
     }
 
-
-    // preuba
+    // prueba
     public function search(Request $request)
 {
     $categoria = $request->input('categoria');
@@ -158,6 +154,5 @@ class ProveedoresController extends Controller
 
     return view('proveedores', compact('proveedores', 'categorias'));
 }
-    // preuba
     
 }

@@ -1,5 +1,4 @@
 @extends('layouts.layout')
-
 @section('content')
 
 <div class="container formulario-container mt-5">

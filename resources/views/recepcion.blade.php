@@ -167,14 +167,10 @@
                         @endif
                     </td>
                     <td>
-                    <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">
-    Editar <i class="fas fa-edit"></i>
-</a>
-                    </a>
+                    <a href="{{ route('recepcion.edit', $recepcion->idRecepcion_mercancia) }}" class="btn btn-sm btn-secondary me-1">Editar <i class="fas fa-edit"></i></a>
 
-                        <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">
-                            Ver <i class="fas fa-eye"></i>
-                        </a></td>
+                    <a href="#" class="btn btn-sm btn-warning view-order" data-id="{{ $recepcion->idRecepcion_mercancia }}" data-bs-toggle="modal" data-bs-target="#viewModal" title="Ver">Ver<i class="fas fa-eye"></i></a>
+                </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -297,7 +293,6 @@ $('.view-order').click(function(e) {
     });
 });
 </script>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
