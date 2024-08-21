@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container formulario-container mt-5">
-        <!-- Manejo de errores -->
-@if ($errors->any())
+    <!-- Manejo de errores -->
+    @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show">
         <ul>
             @foreach ($errors->all() as $error)
@@ -102,48 +102,48 @@
         </div>
 
        <!-- Tabla de comparación -->
-<table id="productTable" class="table table-bordered mb-4">
-    <thead>
-        <tr>
-            <th>Suministro</th>
-            <th>Cantidad Por Devolver</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="product-row">
-            <td>
-                <select class="form-control" name="Suministros_idSuministro[]" required>
-                    <option value="">Selecciona un suministro</option>
-                    @foreach($suministros as $suministro)
-                        <option value="{{ $suministro->idSuministro }}">{{ $suministro->nombre_suministro }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <input type="number" class="form-control" name="cantidad_devuelta[]" required>
-            </td>
-            <td>
-                <select class="form-control" name="status_devolucion[]" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="Sobrante" {{ old('status_devolucion') == 'Sobrante' ? 'selected' : '' }}>Sobrante</option>
-                    <option value="Faltante" {{ old('status_devolucion') == 'Faltante' ? 'selected' : '' }}>Faltante</option>
-                    <option value="Dañado" {{ old('status_devolucion') == 'Dañado' ? 'selected' : '' }}>Dañado</option>
-                    <option value="Otro" {{ old('status_devolucion') == 'Otro' ? 'selected' : '' }}>Otro</option>
-                </select>
-            </td>
-        </tr>
-    </tbody>
-</table>
+        <table id="productTable" class="table table-bordered mb-4">
+            <thead>
+                <tr>
+                    <th>Suministro</th>
+                    <th>Cantidad Por Devolver</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="product-row">
+                    <td>
+                        <select class="form-control" name="Suministros_idSuministro[]" required>
+                            <option value="">Selecciona un suministro</option>
+                            @foreach($suministros as $suministro)
+                                <option value="{{ $suministro->idSuministro }}">{{ $suministro->nombre_suministro }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="cantidad_devuelta[]" required>
+                    </td>
+                    <td>
+                        <select class="form-control" name="status_devolucion[]" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Sobrante" {{ old('status_devolucion') == 'Sobrante' ? 'selected' : '' }}>Sobrante</option>
+                            <option value="Faltante" {{ old('status_devolucion') == 'Faltante' ? 'selected' : '' }}>Faltante</option>
+                            <option value="Dañado" {{ old('status_devolucion') == 'Dañado' ? 'selected' : '' }}>Dañado</option>
+                            <option value="Otro" {{ old('status_devolucion') == 'Otro' ? 'selected' : '' }}>Otro</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <!-- Motivo -->
-         <div class="row mb-3">
+        <div class="row mb-3">
             <div class="col-12">
                 <label for="motivo" class="form-label">Motivo</label>
                 <textarea class="form-control" id="motivo" name="motivo[]" rows="3"></textarea>
             </div>
         </div>
         <div>
-        <button type="reset" class="btn btn-primary mt-2" title="Limpiar">Limpiar <i class="fa-solid fa-broom"></i></button>
+            <button type="reset" class="btn btn-primary mt-2" title="Limpiar">Limpiar <i class="fa-solid fa-broom"></i></button>
             <button type="button" id="addRow" class="btn btn-dark mt-2" title="Agregar Fila">Agregar Fila</button>
             <button type="submit" class="btn btn-success me-2 mt-2" title="Guardar">Guardar <i class="fa-solid fa-box-archive"></i></button>
         </div>
@@ -161,7 +161,7 @@
                     <th>Suministro</th>
                     <th>Cantidad Devuelta</th>
                     <th>Estado</th>
-                    <th>Acción</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -186,38 +186,62 @@
                             @endforeach
                         </td>
                         <td>
-    @php
-        $now = \Carbon\Carbon::now();
-        $created_at = \Carbon\Carbon::parse($devolucion->created_at);
-        $minutes_passed = $now->diffInMinutes($created_at);
-        $isCancelled = $devolucion->detalles_devoluciones->first()->status_devolucion === 'Cancelado';
-    @endphp
+                            @php
+                                $now = \Carbon\Carbon::now();
+                                $created_at = \Carbon\Carbon::parse($devolucion->created_at);
+                                $minutes_passed = $now->diffInMinutes($created_at);
+                                $isCancelled = $devolucion->detalles_devoluciones->first()->status_devolucion === 'Cancelado';
+                            @endphp
 
-    @if($isCancelled)
-        <!-- Mostrar botón gris "Cancelado" si ya está cancelado -->
-        <button type="button" class="btn btn-sm btn-secondary" disabled>Cancelado</button>
-    @elseif($minutes_passed <= 3)
-        <!-- Mostrar botón de cancelar si no está cancelado y han pasado menos de 3 minutos -->
-        <form action="{{ route('devolucion.cancel', $devolucion->idDevoluciones) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger">Cancelar</button>
-        </form>
-    @else
-        <!-- Mostrar texto si han pasado más de 3 minutos -->
-        <span class="text-muted">No disponible</span>
-    @endif
-</td>
+                            @if($isCancelled)
+                                <!-- Mostrar botón gris "Cancelado" si ya está cancelado -->
+                                <button type="button" class="btn btn-sm btn-secondary" disabled>Cancelado</button>
+                            @elseif($minutes_passed <= 3)
+                                <!-- Mostrar botón de cancelar si no está cancelado y han pasado menos de 3 minutos -->
+                                <form action="{{ route('devolucion.cancel', $devolucion->idDevoluciones) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                                </form>
+                            @else
+                                <!-- Mostrar texto si han pasado más de 3 minutos -->
+                                <span class="text-muted">No disponible</span>
+                            @endif
 
+                            <button type="button" class="btn btn-sm btn-warning view-devolucion" data-id="{{ $devolucion->idDevoluciones }}" title="Ver">
+                                Ver <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 </div>
-
+<div class="modal fade" id="devolucionDetailModal" tabindex="-1" aria-labelledby="devolucionDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #8B4513; color: white;">
+                <h5 class="modal-title" id="devolucionDetailModalLabel">
+                    <i class="fas fa-file-invoice me-2"></i>Detalles de la Devolución
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: #FFF8DC;">
+                <div id="devolucionDetailContent" class="p-3">
+                    <!-- El contenido se insertará aquí dinámicamente -->
+                </div>
+            </div>
+            <div class="modal-footer" style="background-color: #DEB887;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#Recepciones_mercancias_idRecepcion_mercancia').change(function() {
@@ -269,11 +293,8 @@ $(document).ready(function() {
             // Ocultar la sección de detalles si no se selecciona nada
             $('#recepcion-details').hide();
         }
-        
     });
-});
 
-$(document).ready(function() {
     $('#addRow').click(function() {
         var newRow = `
             <tr class="product-row">
@@ -301,7 +322,67 @@ $(document).ready(function() {
         `;
         $('#productTable tbody').append(newRow);
     });
+
+    $('.view-devolucion').click(function(e) {
+    e.preventDefault();
+    var devolucionId = $(this).data('id');
+    $.ajax({
+        url: '/devolucion/' + devolucionId,
+        type: 'GET',
+        success: function(data) {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            var modalContent = `
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <h6 style="color: #8B4513;"><i class="fas fa-info-circle me-2"></i>Información General</h6>
+                <p><strong>ID:</strong> ${data.idDevolucion}</p>
+                <p><strong>Fecha de Devolución:</strong> ${data.fechaDevolucion}</p>
+                <p><strong>Empleado:</strong> ${data.empleado}</p>
+                <p><strong>Recepción:</strong> ${data.recepcion ? data.recepcion.idRecepcion : 'No especificado'}</p>
+            </div>
+        </div>
+        <hr>
+        <h6 style="color: #8B4513;"><i class="fas fa-list me-2"></i>Detalles de la Devolución</h6>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" style="background-color: #FFEFD5;">
+                <thead style="background-color: #D2691E; color: white;">
+                    <tr>
+                        <th>Suministro</th>
+                        <th>Cantidad Devuelta</th>
+                        <th>Status</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.detallesDevolucion.length ? data.detallesDevolucion.map(detalle => `
+                        <tr>
+                            <td>${detalle.suministro || 'No especificado'}</td>
+                            <td>${detalle.cantidadDevuelta || 'No especificada'}</td>
+                            <td>${detalle.statusDevolucion || 'Desconocido'}</td>
+                            <td>${detalle.motivo || 'No especificado'}</td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="4" class="text-center">No hay detalles disponibles</td></tr>'}
+                </tbody>
+            </table>
+        </div>
+    </div>
+`;
+
+            $('#devolucionDetailContent').html(modalContent);
+            $('#devolucionDetailModal').modal('show');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+            alert('Error al cargar los detalles de la devolución');
+        }
+    });
 });
 
+});
 </script>
 @endsection

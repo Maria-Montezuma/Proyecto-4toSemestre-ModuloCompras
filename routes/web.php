@@ -44,6 +44,8 @@ Route::get('/devolucion', [DevolucionController::class, 'index'])->name('devoluc
 Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
 Route::delete('/devolucion/{id}/cancel', [DevolucionController::class, 'cancel'])->name('devolucion.cancel');
 Route::get('/recepcion-details/{id}', [DevolucionController::class, 'getRecepcionDetails']);
+Route::get('/devolucion/{id}', [DevolucionController::class, 'getDevolucionDetails']);
+
 
 // Ruta para solicitud
 Route::get('/solicitud', [SolicitudController::class, 'create'])->name('solicitud.create');

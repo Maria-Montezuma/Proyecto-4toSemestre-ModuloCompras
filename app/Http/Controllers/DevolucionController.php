@@ -146,5 +146,42 @@ class DevolucionController extends Controller
         return redirect()->route('devolucion')->with('error', 'No se puede cancelar esta devolución porque ha pasado más de 3 minutos.');
     }
 }
+public function getDevolucionDetails($id)
+{
+    $devolucion = Devolucione::with([
+        'detalles_devoluciones.suministro',
+        'empleado',
+        'recepciones_mercancia'
+    ])->find($id);
+
+    if (!$devolucion) {
+        return response()->json(['error' => 'Devolución no encontrada'], 404);
+    }
+
+    return response()->json([
+        'idDevolucion' => $devolucion->idDevoluciones,
+        'fechaDevolucion' => $devolucion->fecha_devolucion->format('d/m/Y'),
+        'empleado' => $devolucion->empleado ? $devolucion->empleado->nombre_empleado . ' ' . $devolucion->empleado->apellido_empleado : 'No especificado',
+        'recepcion' => $devolucion->recepciones_mercancia ? [
+            'idRecepcion' => $devolucion->recepciones_mercancia->idRecepcion_mercancia,
+            'fechaRecepcion' => $devolucion->recepciones_mercancia->fecha_recepcion->format('d/m/Y'),
+            'detalles' => $devolucion->recepciones_mercancia->detalles_recepciones_mercancias->map(function ($detalle) {
+                return [
+                    'suministro' => $detalle->suministro ? $detalle->suministro->nombre_suministro : 'No especificado',
+                    'cantidadRecibida' => $detalle->cantidad_recibida,
+                    'estado' => $detalle->status_recepcion == 1 ? 'Aceptado' : 'Rechazado'
+                ];
+            })
+        ] : 'No especificado',
+        'detallesDevolucion' => $devolucion->detalles_devoluciones->map(function ($detalle) {
+            return [
+                'suministro' => $detalle->suministro ? $detalle->suministro->nombre_suministro : 'No especificado',
+                'cantidadDevuelta' => $detalle->cantidad_devuelta,
+                'statusDevolucion' => $detalle->status_devolucion,
+                'motivo' => $detalle->motivo
+            ];
+        })
+    ]);
+}
 
 }
