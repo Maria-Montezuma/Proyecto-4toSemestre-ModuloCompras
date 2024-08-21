@@ -186,21 +186,29 @@
                             @endforeach
                         </td>
                         <td>
-                            @php
-                                $now = \Carbon\Carbon::now();
-                                $created_at = \Carbon\Carbon::parse($devolucion->created_at);
-                                $minutes_passed = $now->diffInMinutes($created_at);
-                            @endphp
-                            @if($minutes_passed <= 3)
-                                <form action="{{ route('devolucion.cancel', $devolucion->idDevoluciones) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Cancelar</button>
-                                </form>
-                            @else
-                                <span class="text-muted">No disponible</span>
-                            @endif
-                        </td>
+    @php
+        $now = \Carbon\Carbon::now();
+        $created_at = \Carbon\Carbon::parse($devolucion->created_at);
+        $minutes_passed = $now->diffInMinutes($created_at);
+        $isCancelled = $devolucion->detalles_devoluciones->first()->status_devolucion === 'Cancelado';
+    @endphp
+
+    @if($isCancelled)
+        <!-- Mostrar botón gris "Cancelado" si ya está cancelado -->
+        <button type="button" class="btn btn-sm btn-secondary" disabled>Cancelado</button>
+    @elseif($minutes_passed <= 3)
+        <!-- Mostrar botón de cancelar si no está cancelado y han pasado menos de 3 minutos -->
+        <form action="{{ route('devolucion.cancel', $devolucion->idDevoluciones) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">Cancelar</button>
+        </form>
+    @else
+        <!-- Mostrar texto si han pasado más de 3 minutos -->
+        <span class="text-muted">No disponible</span>
+    @endif
+</td>
+
                     </tr>
                 @endforeach
             </tbody>

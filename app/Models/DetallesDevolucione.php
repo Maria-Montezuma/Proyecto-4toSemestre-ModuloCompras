@@ -57,10 +57,12 @@ class DetallesDevolucione extends Model
 public function getStatusDevolucionAttribute()
 {
     $statusMap = [
+		0 => 'Cancelado',
         1 => 'Sobrante',
         2 => 'Faltante',
         3 => 'Dañado',
-        4 => 'Otro'
+        4 => 'Otro',
+	
     ];
 
     return $statusMap[$this->attributes['status_devolucion']] ?? 'Desconocido';
@@ -72,7 +74,8 @@ public function setStatusDevolucionAttribute($value)
         'Sobrante' => 1,
         'Faltante' => 2,
         'Dañado' => 3,
-        'Otro' => 4
+        'Otro' => 4,
+		'Cancelado' => 0
     ];
 
     $this->attributes['status_devolucion'] = $statusMap[$value] ?? 0;
