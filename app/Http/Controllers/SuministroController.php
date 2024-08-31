@@ -17,7 +17,7 @@ class SuministroController extends Controller
         return response()->json(['error' => 'Proveedor no encontrado.'], 404);
     }
 
-    $categorias = $proveedor->categorias;  // Obtiene las categorías asociadas al proveedor
+    $categorias = $proveedor->categorias;
 
     return response()->json($categorias);
 }
@@ -37,7 +37,6 @@ class SuministroController extends Controller
         $suministro->categorias_idcategorias = $request->categorias_idcategorias;
         $suministro->save();
 
-        // Crear la relación en la tabla pivot
         ProveedoresHasSuministro::create([
             'Proveedores_idProveedores' => $request->Proveedores_idProveedores,
             'Suministro_idSuministro' => $suministro->idSuministro,

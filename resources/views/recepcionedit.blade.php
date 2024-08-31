@@ -86,20 +86,6 @@
         <a href="{{ route('recepcion.create') }}" class="btn btn-secondary mt-2" title="Cancelar">Cancelar <i class="fa-solid fa-times"></i></a>
         </div> 
 </form>
-
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Add new row to the table
-    $('#addRow').click(function() {
-        var newRow = $('#productTable tbody tr:first').clone();
-        newRow.find('input').val('');
-        newRow.find('select').val('');
-        $('#productTable tbody').append(newRow);
-    });
-});
-</script>
-
 @endsection

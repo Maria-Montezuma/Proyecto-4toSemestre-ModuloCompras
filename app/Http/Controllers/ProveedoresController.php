@@ -137,7 +137,6 @@ class ProveedoresController extends Controller
         }
     }
 
-    // prueba
     public function search(Request $request)
 {
     $categoria = $request->input('categoria');
