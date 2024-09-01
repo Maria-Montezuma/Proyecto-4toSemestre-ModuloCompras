@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/proveedor/${proveedorId}/categorias`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('La respuesta de la red no fue correcta');
                     }
                     return response.json();
                 })
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             categoriaSelect.appendChild(option);
                         });
                     } else {
-                        console.error('Unexpected response format:', data);
+                        console.error('Formato de respuesta inesperado:', data);
                     }
                 })
                 .catch(error => {
