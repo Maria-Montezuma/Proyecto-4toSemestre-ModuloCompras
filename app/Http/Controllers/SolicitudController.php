@@ -6,7 +6,6 @@ use App\Models\Proveedore;
 use App\Models\Solicitude;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
-use App\Models\Suministro;
 use App\Models\Categoria;
 use Carbon\Carbon;
 
@@ -29,13 +28,6 @@ use Carbon\Carbon;
         $solicitudes = Solicitude::with(['empleado', 'proveedores'])->get();
         $categorias = Categoria::all(); 
         return view('solicitud', compact('proveedores', 'empleados', 'solicitudes', 'categorias'));
-    }
-
-    public function index()
-    {
-        $solicitudes = Solicitude::with(['empleado', 'proveedores.suministros'])->get();
-        $categorias = Categoria::all();
-        return view('solicitud', compact('solicitudes', 'categorias'));
     }
 
     // Procesa la solicitud

@@ -64,8 +64,7 @@ class OrdenCompraController extends Controller
     $ordenCompra->Proveedores_idProveedores = $validatedData['Proveedores_idProveedores'];
     $subtotal_pagar = array_sum($request->subtotales);
     $ordenCompra->subtotal_pagar = $subtotal_pagar;
-    $ordenCompra->total_pagar = $subtotal_pagar; // Aquí puedes agregar los impuestos si es necesario
-     
+    $ordenCompra->total_pagar = $subtotal_pagar;
     $ordenCompra->enviado_at = now();
     
     $ordenCompra->save();
@@ -96,22 +95,6 @@ class OrdenCompraController extends Controller
         return response()->json($suministros);
     }
 
-    public function search(Request $request)
-{
-    $query = OrdenesCompra::query();
-
-    if ($request->has('proveedor')) {
-        $query->where('Proveedores_idProveedores', $request->proveedor);
-    }
-
-    $ordenesCompra = $query->get();
-
-    $proveedores = Proveedore::all();
-
-    return view('ordenescompra.index', compact('ordenesCompra', 'proveedores'));
-}
-
-    // prueba
     public function cancel($id)
     {
         $ordenCompra = OrdenesCompra::findOrFail($id);
